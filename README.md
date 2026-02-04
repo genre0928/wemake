@@ -6,4 +6,4 @@ IDE : Cursor
 
 규칙
 
-1. routes.ts : react-router이 렌더링할 파일을 찾는 것 / 경로 고정(app/) / 이름 고정정
+1. routes.ts : react-router이 렌더링할 파일을 찾는 것 / 경로 고정(app/) / 이름 고정
