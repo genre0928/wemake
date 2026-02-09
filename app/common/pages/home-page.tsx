@@ -58,6 +58,27 @@ export default function HomePage() {
           timeAgo="12시간 전"
         />
       </div>
+      {/* 아이디어 */}
+      <div className="grid grid-cols-3 gap-4">
+        <div>
+          <h2 className="text-5xl font-bold leading-tight tracking-tight">
+            오늘의 아이디어
+          </h2>
+          <p className="text-xl font-light text-foreground">
+            프로젝트에 필요한 아이디어를 찾아보세요
+          </p>
+          <Button variant="link" asChild className="text-lg p-0">
+            <Link to="/ideas">모든 아이디어 보러가기 →</Link>
+          </Button>
+        </div>
+        <IdeaCard
+          ideaId="ideaId"
+          title="아이디어 제목 이렇게 이렇게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길고 길고 길 asd"
+          viewCount={10}
+          timeAgo="12시간 전"
+          likeCount={10}
+        />
+      </div>
     </div>
   );
 }
