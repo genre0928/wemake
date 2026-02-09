@@ -4,6 +4,7 @@ import type { Route } from "./+types/home-page";
 import { ProductCard } from "~/features/products/components/product-card";
 import { PostCard } from "~/features/community/post-card";
 import { IdeaCard } from "~/features/ideas/idea-card";
+import { JobCard } from "~/features/job/job-card";
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -79,6 +80,29 @@ export default function HomePage() {
           timeAgo="12시간 전"
           likeCount={10}
           isClaimed={false}
+        />
+      </div>
+      {/* 직업 */}
+      <div className="grid grid-cols-4 gap-4">
+        <div>
+          <h2 className="text-5xl font-bold leading-tight tracking-tight">
+            오늘의 직업
+          </h2>
+          <p className="text-xl font-light text-foreground">
+            오늘의 직업을 확인해보세요
+          </p>
+          <Button variant="link" asChild className="text-lg p-0">
+            <Link to="/jobs">모든 직업 보러가기 →</Link>
+          </Button>
+        </div>
+        <JobCard
+          jobId="jobId"
+          companyName="테슬라"
+          timeAgo="12시간 전"
+          title="프론트엔드 개발자"
+          tags={["프론트엔드", "개발", "테슬라"]}
+          salary={[3500, 4000]}
+          location="경상북도 구미시"
         />
       </div>
     </div>
