@@ -27,6 +27,7 @@
   --color-chart-4: hsl(var(--chart-4));
   --color-chart-5: hsl(var(--chart-5));
   --radius: var(--radius);
+  --animate-float: float 1.2s ease-in-out infinite;
 }
 
 html,
@@ -67,6 +68,16 @@ body {
     --chart-5: 27 87% 67%;
   }
 
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+
   .dark {
     --background: 20 14.3% 4.1%;
     --foreground: 0 0% 95%;
@@ -92,5 +103,11 @@ body {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+  }
+}
+
+@layer utilities {
+  .group:hover .icon-float-on-group-hover {
+    animation: float 1.2s ease-in-out infinite;
   }
 }

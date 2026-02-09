@@ -5,6 +5,7 @@ import { ProductCard } from "~/features/products/components/product-card";
 import { PostCard } from "~/features/community/post-card";
 import { IdeaCard } from "~/features/ideas/idea-card";
 import { JobCard } from "~/features/job/job-card";
+import { TeamCard } from "~/features/teams/job-card";
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -103,6 +104,28 @@ export default function HomePage() {
           tags={["프론트엔드", "개발", "테슬라"]}
           salary={[3500, 4000]}
           location="경상북도 구미시"
+        />
+      </div>
+      {/* 팀 섹션 */}
+      <div className="grid grid-cols-3 gap-4">
+        <div>
+          <h2 className="text-5xl font-bold leading-tight tracking-tight">
+            구인구직
+          </h2>
+          <p className="text-xl font-light text-foreground">
+            등록된 모든 팀을 확인해보세요
+          </p>
+          <Button variant="link" asChild className="text-lg p-0">
+            <Link to="/teams">모든 팀 보러가기 →</Link>
+          </Button>
+        </div>
+
+        <TeamCard
+          teamId="teamId"
+          title="모바일게임 BM 기능 구현"
+          description="BM 구현을 위한 기술을 가진 팀원을 구합니다 자격이 있으신 분들은 지원해주세요"
+          tags={["프론트엔드", "백엔드"]}
+          authorNickname="nickname"
         />
       </div>
     </div>
