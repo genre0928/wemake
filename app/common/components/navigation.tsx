@@ -17,12 +17,12 @@ const menus = [
       {
         name: "리더보드",
         description: "리더보드 페이지",
-        to: "/products/leaderboard",
+        to: "/products/leaderboards",
       },
       {
         name: "카테고리",
         description: "카테고리 페이지",
-        to: "/products/category",
+        to: "/products/categories",
       },
       {
         name: "검색",
