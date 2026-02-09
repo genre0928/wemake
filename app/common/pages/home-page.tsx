@@ -3,6 +3,7 @@ import { Button } from "../components/ui/button";
 import type { Route } from "./+types/home-page";
 import { ProductCard } from "~/features/products/components/product-card";
 import { PostCard } from "~/features/community/post-card";
+import { IdeaCard } from "~/features/ideas/idea-card";
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -77,6 +78,7 @@ export default function HomePage() {
           viewCount={10}
           timeAgo="12시간 전"
           likeCount={10}
+          isClaimed={false}
         />
       </div>
     </div>
