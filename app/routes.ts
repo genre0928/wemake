@@ -28,6 +28,7 @@ export default [
         "/weekly/:year/:week",
         "features/products/pages/weekly-leaderboard-page.tsx",
       ),
+      route("/:period", "features/products/pages/leaderboard-redirection-page.tsx"),
     ]),
     ...prefix("categories", [
       index("features/products/pages/categories-page.tsx"),

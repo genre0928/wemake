@@ -43,6 +43,29 @@ export default function LeaderboardPage() {
           <Link to="/products/leaderboards/daily">더 보기 &rarr;</Link>
         </Button>
       </div>
+      {/* 주간 리더보드 섹션 */}
+      <div className="grid grid-cols-3 gap-4 mb-40">
+        <SectionHeader
+          title="주간 리더보드"
+          description="한 주동안 가장 인기 있는 제품을 확인해보세요."
+          linkTo="/products/leaderboard"
+          linkText="모든 리더보기 보러가기"
+        />
+        {Array.from({ length: 7 }).map((_, index) => (
+          <ProductCard
+            key={index}
+          productId="productId"
+          name="제품명"
+          description="제품 설명"
+          commentCount={10}
+          viewCount={10}
+          likeCount={10}
+          isLiked={false}
+        />))}
+        <Button variant="link" asChild className="w-full text-lg p-0 self-center">
+          <Link to="/products/leaderboards/weekly">더 보기 &rarr;</Link>
+        </Button>
+      </div>
       {/* 월간 리더보드 섹션 */}
       <div className="grid grid-cols-3 gap-4 mb-40">
         <SectionHeader
