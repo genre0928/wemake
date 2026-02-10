@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Button } from "../components/ui/button";
+import { SectionHeader } from "../components/section-header";
 import type { Route } from "./+types/home-page";
 import { ProductCard } from "~/features/products/components/product-card";
 import { PostCard } from "~/features/community/post-card";
@@ -25,20 +25,15 @@ export const meta: Route.MetaFunction = () => {
 
 export default function HomePage() {
   return (
-    <div className="px-20 space-y-40">
+    <div className="space-y-40">
       {/* 오늘의 제품 */}
       <div className="grid grid-cols-3 gap-4">
-        <div>
-          <h2 className="text-5xl font-bold leading-tight tracking-tight">
-            오늘의 제품
-          </h2>
-          <p className="text-xl font-light text-foreground">
-            커뮤니티에서 가장 인기 있는 제품을 확인해보세요.
-          </p>
-          <Button variant="link" asChild className="text-lg p-0">
-            <Link to="/products/leaderboard">모든 리더보기 보러가기 →</Link>
-          </Button>
-        </div>
+        <SectionHeader
+          title="오늘의 제품"
+          description="커뮤니티에서 가장 인기 있는 제품을 확인해보세요."
+          linkTo="/products/leaderboard"
+          linkText="모든 리더보기 보러가기"
+        />
         <ProductCard
           productId="productId"
           name="제품명"
@@ -51,17 +46,12 @@ export default function HomePage() {
       </div>
       {/* 토론 */}
       <div className="grid grid-cols-3 gap-4">
-        <div>
-          <h2 className="text-5xl font-bold leading-tight tracking-tight">
-            오늘의 토론
-          </h2>
-          <p className="text-xl font-light text-foreground">
-            커뮤니티에서 가장 인기 있는 토론을 확인해보세요.
-          </p>
-          <Button variant="link" asChild className="text-lg p-0">
-            <Link to="/community">모든 토론 보러가기 →</Link>
-          </Button>
-        </div>
+        <SectionHeader
+          title="오늘의 토론"
+          description="커뮤니티에서 가장 인기 있는 토론을 확인해보세요."
+          linkTo="/community"
+          linkText="모든 토론 보러가기"
+        />
         <PostCard
           postId="postId"
           title="토론 제목"
@@ -72,17 +62,12 @@ export default function HomePage() {
       </div>
       {/* 아이디어 */}
       <div className="grid grid-cols-3 gap-4">
-        <div>
-          <h2 className="text-5xl font-bold leading-tight tracking-tight">
-            오늘의 아이디어
-          </h2>
-          <p className="text-xl font-light text-foreground">
-            프로젝트에 필요한 아이디어를 찾아보세요
-          </p>
-          <Button variant="link" asChild className="text-lg p-0">
-            <Link to="/ideas">모든 아이디어 보러가기 →</Link>
-          </Button>
-        </div>
+        <SectionHeader
+          title="오늘의 아이디어"
+          description="프로젝트에 필요한 아이디어를 찾아보세요"
+          linkTo="/ideas"
+          linkText="모든 아이디어 보러가기"
+        />
         <IdeaCard
           ideaId="ideaId"
           title="아이디어 제목 이렇게 이렇게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길고 길고 길 asd"
@@ -94,17 +79,12 @@ export default function HomePage() {
       </div>
       {/* 직업 */}
       <div className="grid grid-cols-4 gap-4">
-        <div>
-          <h2 className="text-5xl font-bold leading-tight tracking-tight">
-            오늘의 직업
-          </h2>
-          <p className="text-xl font-light text-foreground">
-            오늘의 직업을 확인해보세요
-          </p>
-          <Button variant="link" asChild className="text-lg p-0">
-            <Link to="/jobs">모든 직업 보러가기 →</Link>
-          </Button>
-        </div>
+        <SectionHeader
+          title="오늘의 직업"
+          description="오늘의 직업을 확인해보세요"
+          linkTo="/jobs"
+          linkText="모든 직업 보러가기"
+        />
         <JobCard
           jobId="jobId"
           companyName="테슬라"
@@ -117,17 +97,12 @@ export default function HomePage() {
       </div>
       {/* 팀 섹션 */}
       <div className="grid grid-cols-3 gap-4">
-        <div>
-          <h2 className="text-5xl font-bold leading-tight tracking-tight">
-            구인구직
-          </h2>
-          <p className="text-xl font-light text-foreground">
-            등록된 모든 팀을 확인해보세요
-          </p>
-          <Button variant="link" asChild className="text-lg p-0">
-            <Link to="/teams">모든 팀 보러가기 →</Link>
-          </Button>
-        </div>
+        <SectionHeader
+          title="구인구직"
+          description="등록된 모든 팀을 확인해보세요"
+          linkTo="/teams"
+          linkText="모든 팀 보러가기"
+        />
         <Link to="/teams/teamId">
           <Card className="bg-transparent hover:bg-primary/10 transition-colors duration-200 ease-in-out">
             <CardHeader className="flex items-center">
