@@ -5,7 +5,16 @@ import { ProductCard } from "~/features/products/components/product-card";
 import { PostCard } from "~/features/community/post-card";
 import { IdeaCard } from "~/features/ideas/idea-card";
 import { JobCard } from "~/features/job/job-card";
-import { TeamCard } from "~/features/teams/job-card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { SquareArrowOutUpRight } from "lucide-react";
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -119,14 +128,50 @@ export default function HomePage() {
             <Link to="/teams">모든 팀 보러가기 →</Link>
           </Button>
         </div>
-
-        <TeamCard
-          teamId="teamId"
-          title="모바일게임 BM 기능 구현"
-          description="BM 구현을 위한 기술을 가진 팀원을 구합니다 자격이 있으신 분들은 지원해주세요"
-          tags={["프론트엔드", "백엔드"]}
-          authorNickname="nickname"
-        />
+        <Link to="/teams/teamId">
+          <Card className="bg-transparent hover:bg-primary/10 transition-colors duration-200 ease-in-out">
+            <CardHeader className="flex items-center">
+              <CardTitle className="line-clamp-1 text-xl flex items-center justify-between w-full">
+                <span>모바일게임 BM 기능 구현</span>
+                <SquareArrowOutUpRight className="size-4 shrink-0" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <p className="text-sm line-clamp-2">
+                BM 구현을 위한 기술을 가진 팀원을 구합니다 자격이 있으신 분들은
+                지원해주세요
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Badge
+                  variant="ghost"
+                  className="flex items-center gap-2 text-base"
+                >
+                  <span>프론트엔드</span>
+                </Badge>
+                <Badge
+                  variant="ghost"
+                  className="flex items-center gap-2 text-base"
+                >
+                  <span>백엔드</span>
+                </Badge>
+              </div>
+            </CardContent>
+            <CardFooter className="flex justify-end">
+              <div>
+                <Badge
+                  variant="ghost"
+                  className="flex items-center gap-2 text-base"
+                >
+                  <span>@nickname</span>
+                  <Avatar className="size-4">
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>N</AvatarFallback>
+                  </Avatar>
+                </Badge>
+              </div>
+            </CardFooter>
+          </Card>
+        </Link>
       </div>
     </div>
   );
