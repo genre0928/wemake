@@ -25,8 +25,6 @@ export default function LeaderboardPage() {
         <SectionHeader
           title="데일리 리더보드"
           description="하루동안 가장 인기 있는 제품을 확인해보세요."
-          linkTo="/products/leaderboard"
-          linkText="모든 리더보기 보러가기"
         />
         {Array.from({ length: 7 }).map((_, index) => (
           <ProductCard
@@ -48,8 +46,6 @@ export default function LeaderboardPage() {
         <SectionHeader
           title="주간 리더보드"
           description="한 주동안 가장 인기 있는 제품을 확인해보세요."
-          linkTo="/products/leaderboard"
-          linkText="모든 리더보기 보러가기"
         />
         {Array.from({ length: 7 }).map((_, index) => (
           <ProductCard
@@ -71,8 +67,6 @@ export default function LeaderboardPage() {
         <SectionHeader
           title="월간 리더보드"
           description="한 달동안 가장 인기 있는 제품을 확인해보세요."
-          linkTo="/products/leaderboard"
-          linkText="모든 리더보기 보러가기"
         />
         {Array.from({ length: 7 }).map((_, index) => (
           <ProductCard
@@ -94,8 +88,6 @@ export default function LeaderboardPage() {
         <SectionHeader
           title="연간 리더보드"
           description="한 해동안 가장 인기 있는 제품을 확인해보세요."
-          linkTo="/products/leaderboard"
-          linkText="모든 리더보기 보러가기"
         />
         {Array.from({ length: 7 }).map((_, index) => (
           <ProductCard

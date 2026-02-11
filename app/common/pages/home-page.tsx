@@ -31,7 +31,7 @@ export default function HomePage() {
         <SectionHeader
           title="오늘의 제품"
           description="커뮤니티에서 가장 인기 있는 제품을 확인해보세요."
-          linkTo="/products/leaderboard"
+          linkTo="/products/leaderboards"
           linkText="모든 리더보기 보러가기"
         />
         <ProductCard
