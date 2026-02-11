@@ -5,6 +5,7 @@ import { Hero } from "~/common/components/hero";
 import { ProductCard } from "../components/product-card";
 import { Button } from "~/common/components/ui/button";
 import { Link } from "react-router";
+import ProductPagination from "~/common/components/product-pagination";
 
 const paramsSchema = z.object({
   year: z.coerce.number(),
@@ -77,7 +78,7 @@ export default function DailyLeaderboardPage({
           </Button>
         )}
       </div>
-      <div className="space-y-4 w-full max-w-3xl mx-auto">
+      <div className="space-y-4 w-full max-w-3xl mx-auto mb-10">
         {Array.from({ length: 7 }).map((_, index) => (
           <ProductCard
             key={index}
@@ -90,6 +91,9 @@ export default function DailyLeaderboardPage({
             isLiked={false}
           />
         ))}
+      </div>
+      <div>
+        <ProductPagination totalPages={10} />
       </div>
     </div>
   );
