@@ -7,6 +7,14 @@ import { Button } from "~/common/components/ui/button";
 import { Link } from "react-router";
 import ProductPagination from "~/common/components/product-pagination";
 
+export const meta: Route.MetaFunction = ({params}) => {
+  const { year, month, day } = params;
+  return [
+    {title : `${year}년 ${month}월 ${day}일 리더보드 | Wemake`},
+    {name : "description", content : `${year}년 ${month}월 ${day}일 리더보드 페이지`},
+  ]
+}
+
 const paramsSchema = z.object({
   year: z.coerce.number(),
   month: z.coerce.number(),

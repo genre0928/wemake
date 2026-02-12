@@ -133,17 +133,18 @@ export default function Navigation({
 }: NavigationProps) {
   return (
     <nav className="flex px-20 h-16 items-center justify-between backdrop-blur fixed top-0 left-0 right-0 z-50 bg-background/50">
-      <div className="flex items-cente">
+      <div className="flex items-center gap-10">
         <Link to="/" className="font-bold tracking-tighter text-lg">
           WeMake
         </Link>
-        <Separator orientation="vertical" className="h-6 mx-4" />
         <NavigationMenu>
           <NavigationMenuList>
             {menus.map((menu) => (
               <NavigationMenuItem key={menu.name}>
                 <Link to={menu.to}>
-                  <NavigationMenuTrigger>{menu.name}</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="bg-transparent">
+                    {menu.name}
+                  </NavigationMenuTrigger>
                 </Link>
                 <NavigationMenuContent>
                   <ul className="grid w-[600px] font-light gap-3 p-4 grid-cols-2">
