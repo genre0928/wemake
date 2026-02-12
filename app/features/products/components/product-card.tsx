@@ -33,7 +33,7 @@ export function ProductCard({
   isLiked = false,
 }: ProductCardProps) {
   return (
-    <Link to={`/product/${productId}`}>
+    <Link to={`/product/${productId}`} className="block">
       <Card className="w-full bg-transparent hover:bg-primary/10 flex flex-row transition-colors duration-200 ease-in-out">
         <CardHeader className="flex-1">
           <CardTitle className="text-2xl font-semibold leading-none tracking-tight">
