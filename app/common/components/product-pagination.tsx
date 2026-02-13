@@ -29,11 +29,9 @@ export default function ProductPagination({
         {page === 1 ? null : (
           <>
             <PaginationItem>
-              <PaginationPrevious
-                to={`?page=${page - 1}`}
-                preventScrollReset
-              />
+              <PaginationPrevious to={`?page=${page - 1}`} preventScrollReset />
             </PaginationItem>
+            {page > 2 && <PaginationEllipsis />}
             <PaginationItem>
               <PaginationLink to={`?page=${page - 1}`} preventScrollReset>
                 {page > 1 ? page - 1 : null}
@@ -54,11 +52,7 @@ export default function ProductPagination({
                 {page + 1}
               </PaginationLink>
             </PaginationItem>
-            {page < totalPages - 1 && (
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-            )}
+            {page < totalPages - 1 && <PaginationEllipsis />}
             <PaginationItem>
               <PaginationNext to={`?page=${page + 1}`} preventScrollReset />
             </PaginationItem>
