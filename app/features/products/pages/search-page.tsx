@@ -1,7 +1,7 @@
 import z from "zod";
 import type { Route } from "./+types/search-page";
 import { Hero } from "~/common/components/hero";
-import { Form } from "react-router";
+import { Form, useLoaderData } from "react-router";
 import { Input } from "~/common/components/ui/input";
 import { Button } from "~/common/components/ui/button";
 import { ProductCard } from "../components/product-card";
@@ -31,9 +31,10 @@ export function loader({ request }: Route.LoaderArgs) {
 }
 
 export default function SearchPage() {
+  const { query, page } = useLoaderData<Route.ComponentProps["loaderData"]>();
   return (
     <div className="space-y-20">
-      <Hero title="검색" description="찾고자 하는 키워드를 검색해주세요" />
+      <Hero title="검색" description={query ? `"${query}"에 대한 검색 결과입니다` : "검색하고자 하는 키워드를 입력하세요"} />
       <Form className="flex justify-center items-center gap-2 max-w-2xl mx-auto">
         <Input type="text" name="query" placeholder="검색어를 입력하세요" />
         <Button type="submit">검색</Button>
