@@ -139,39 +139,53 @@ export default function Navigation({
         </Link>
         <NavigationMenu>
           <NavigationMenuList>
-            {menus.map((menu) => (
-              <NavigationMenuItem key={menu.name}>
-                <Link to={menu.to}>
-                  <NavigationMenuTrigger className="bg-transparent">
-                    {menu.name}
-                  </NavigationMenuTrigger>
-                </Link>
-                <NavigationMenuContent>
-                  <ul className="grid w-[600px] font-light gap-3 p-4 grid-cols-2">
-                    {menu.items?.map((item) => (
-                      <NavigationMenuItem
-                        key={item.name}
-                        className="select-none rounded-md transition-colors"
-                      >
-                        <NavigationMenuLink asChild>
-                          <Link
-                            className="p-3 space-y-1 block leading-none no-underline outline-none"
-                            to={item.to}
-                          >
-                            <span className="text-sm font-medium leading-none">
-                              {item.name}
-                            </span>
-                            <p className="text-sm text-muted-foreground">
-                              {item.description}
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </NavigationMenuItem>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            ))}
+            {menus.map((menu) =>
+              menu.items?.length ? (
+                <NavigationMenuItem key={menu.name}>
+                  {/* 네비게이션 메뉴 트리거(제품, 직업, 커뮤니티 등) - items가 있을 때만 드롭다운 */}
+                  <Link to={menu.to}>
+                    <NavigationMenuTrigger className="bg-transparent">
+                      {menu.name}
+                    </NavigationMenuTrigger>
+                  </Link>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[600px] font-light gap-3 p-4 grid-cols-2">
+                      {menu.items.map((item) => (
+                        <NavigationMenuItem
+                          key={item.name}
+                          className="select-none rounded-md transition-colors"
+                        >
+                          <NavigationMenuLink asChild>
+                            <Link
+                              className="p-3 space-y-1 block leading-none no-underline outline-none"
+                              to={item.to}
+                            >
+                              <span className="text-sm font-medium leading-none">
+                                {item.name}
+                              </span>
+                              <p className="text-sm text-muted-foreground">
+                                {item.description}
+                              </p>
+                            </Link>
+                          </NavigationMenuLink>
+                        </NavigationMenuItem>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              ) : (
+                <NavigationMenuItem key={menu.name}>
+                  <NavigationMenuLink asChild>
+                    <Link
+                      to={menu.to}
+                      className="px-4 py-2 text-sm font-medium"
+                    >
+                      {menu.name}
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              ),
+            )}
           </NavigationMenuList>
         </NavigationMenu>
       </div>
