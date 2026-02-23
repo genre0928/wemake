@@ -5,24 +5,29 @@ import type { InputHTMLAttributes } from "react";
 import { Textarea } from "./ui/textarea";
 
 interface InputPairProps {
-  label: string;
-  description: string;
+  label?: string;
+  description?: string;
   textArea?: boolean;
+  /** Textarea일 때만 사용. 기본 3줄, 전달 시 해당 값 사용 */
+  rows?: number;
 }
 export default function InputPair({
   label,
   description,
-  textArea = false,
+  textArea = true,
+  rows,
   ...rest
 }: InputPairProps &
   InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>) {
   return (
     <div className="flex flex-col max-w-2xl gap-2">
-      <Label htmlFor={rest.name} className="flex flex-col items-start gap-1">
-        <div>{label}</div>
-        <small className="text-muted-foreground">{description}</small>
-      </Label>
-      {textArea ? <Textarea rows={5} {...rest} /> : <Input {...rest} />}
+      {label && description && (
+        <Label htmlFor={rest.name} className="flex flex-col items-start gap-1">
+          <div>{label}</div>
+          <small className="text-muted-foreground">{description}</small>
+        </Label>
+      )}
+      {textArea ? <Textarea {...rest} /> : <Input {...rest} />}
     </div>
   );
 }
