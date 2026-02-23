@@ -57,8 +57,9 @@ export default function ProductOverviewLayout() {
             </div>
           </Button>
         </NavLink>
+
         <NavLink
-          to="/products/productId/reviews/new"
+          to="/products/productId/reviews"
           className={({ isActive }) =>
             isActive
               ? "bg-primary/50 font-bold rounded-xl"
