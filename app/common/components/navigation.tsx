@@ -51,7 +51,7 @@ const menus = [
       {
         name: "제출",
         description: "제출 페이지",
-        to: "/products/submit",
+        to: "/products/create",
       },
       {
         name: "제품 홍보",
@@ -85,9 +85,9 @@ const menus = [
         to: "/jobs?type=internship",
       },
       {
-        name: "제출",
-        description: "제출 페이지",
-        to: "/jobs/submit",
+        name: "공고 등록",
+        description: "공고 등록 페이지",
+        to: "/jobs/create",
       },
     ],
   },

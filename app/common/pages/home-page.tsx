@@ -4,7 +4,7 @@ import type { Route } from "./+types/home-page";
 import { ProductCard } from "~/features/products/components/product-card";
 import { PostCard } from "~/features/community/post-card";
 import { IdeaCard } from "~/features/ideas/idea-card";
-import { JobCard } from "~/features/job/job-card";
+import { JobCard } from "~/features/jobs/components/job-card";
 import {
   Card,
   CardContent,

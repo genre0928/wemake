@@ -30,9 +30,9 @@ export function IdeaCard({
   isClaimed = false,
 }: IdeaCardProps) {
   return (
-    <Card className="bg-transparent hover:bg-primary/10 transition-colors duration-200 ease-in-out">
-      <CardHeader>
-        <Link to={`/ideas/${ideaId}`}>
+    <Link to={`/ideas/${ideaId}`}>
+      <Card className="bg-transparent hover:bg-primary/10 transition-colors duration-200 ease-in-out">
+        <CardHeader>
           <CardTitle className="text-lg leading-tight tracking-tight line-clamp-2">
             <span
               className={cn(!isClaimed && "line-through text-muted-foreground")}
@@ -40,32 +40,32 @@ export function IdeaCard({
               {title}
             </span>
           </CardTitle>
-        </Link>
-      </CardHeader>
-      <CardContent className="flex items-center gap-2">
-        <div className="flex items-center gap-1 text-sm leading-tight">
-          <EyeIcon className="size-4" />
-          <span>{viewCount}</span>
-          <DotIcon className="size-4" />
-          <span>{timeAgo}</span>
-        </div>
-      </CardContent>
-      <CardFooter className="gap-2 justify-end">
-        <Button variant="outline">
-          <HeartIcon className="size-4" />
-          <span>{likeCount}</span>
-        </Button>
-        {isClaimed ? (
-          <Button asChild>
-            <div>구매하기 &rarr;</div>
+        </CardHeader>
+        <CardContent className="flex items-center gap-2">
+          <div className="flex items-center gap-1 text-sm leading-tight">
+            <EyeIcon className="size-4" />
+            <span>{viewCount}</span>
+            <DotIcon className="size-4" />
+            <span>{timeAgo}</span>
+          </div>
+        </CardContent>
+        <CardFooter className="gap-2 justify-end">
+          <Button variant="outline">
+            <HeartIcon className="size-4" />
+            <span>{likeCount}</span>
           </Button>
-        ) : (
-          <Button variant="outline" disabled>
-            <LockIcon className="size-4" />
-            <span>판매 완료</span>
-          </Button>
-        )}
-      </CardFooter>
-    </Card>
+          {isClaimed ? (
+            <Button asChild>
+              <div>구매하기 &rarr;</div>
+            </Button>
+          ) : (
+            <Button variant="outline" disabled>
+              <LockIcon className="size-4" />
+              <span>판매 완료</span>
+            </Button>
+          )}
+        </CardFooter>
+      </Card>
+    </Link>
   );
 }
