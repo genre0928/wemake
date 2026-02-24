@@ -31,6 +31,7 @@ export default function JoinPage() {
               name="email"
               id="email"
               placeholder="example@example.com"
+              type="email"
               required
             />
             <InputPair
@@ -38,6 +39,7 @@ export default function JoinPage() {
               name="password"
               id="password"
               placeholder="********"
+              type="password"
               required
             />
           </div>

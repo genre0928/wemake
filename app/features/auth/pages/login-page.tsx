@@ -18,6 +18,7 @@ export default function LoginPage() {
               name="email"
               id="email"
               placeholder="example@example.com"
+              type="email"
               required
             />
             <InputPair
@@ -25,6 +26,7 @@ export default function LoginPage() {
               name="password"
               id="password"
               placeholder="********"
+              type="password"
               required
             />
           </div>
