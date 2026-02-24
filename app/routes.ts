@@ -58,6 +58,6 @@ export default [
   ...prefix("jobs", [
     index("features/jobs/pages/jobs-page.tsx"),
     route("/:jobId", "features/jobs/pages/job-page.tsx"),
-    route("/submit", "features/jobs/pages/submit-job-page.tsx"),
+    route("/create", "features/jobs/pages/create-job-page.tsx"),
   ]),
 ] satisfies RouteConfig;

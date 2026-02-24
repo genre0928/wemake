@@ -1,6 +1,6 @@
 import { Hero } from "~/common/components/hero";
 import { JobCard } from "~/features/jobs/components/job-card";
-import { JOB_SALARY_TYPES, JOB_TYPES, LOCATION_TYPES } from "../constants";
+import { JOB_SALARY_TYPES, JOB_TYPES, WORK_TYPES } from "../constants";
 import { Button } from "~/common/components/ui/button";
 import { Link, useSearchParams } from "react-router";
 import { cn } from "~/lib/utils";
@@ -64,21 +64,21 @@ export default function JobsPage() {
                   ))}
                 </div>
               </div>
-              {/* 지역 필터 */}
+              {/* 근무 형태 필터 */}
               <div className="space-y-2">
-                <h3 className="text-lg font-bold">지역</h3>
+                <h3 className="text-lg font-bold">근무 형태</h3>
                 <div className="flex flex-wrap gap-2">
-                  {LOCATION_TYPES.map((location) => (
+                  {WORK_TYPES.map((work) => (
                     <Button
-                      key={location.value}
+                      key={work.value}
                       variant={
-                        searchParams.get("location") === location.value
+                        searchParams.get("work") === work.value
                           ? "default"
                           : "outline"
                       }
-                      onClick={() => onFilterClick("location", location.value)}
+                      onClick={() => onFilterClick("work", work.value)}
                     >
-                      {location.label}
+                      {work.label}
                     </Button>
                   ))}
                 </div>

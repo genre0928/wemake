@@ -7,16 +7,10 @@ export const JOB_TYPES = [
   { label: "인턴십", value: "internship" },
 ] as const;
 
-export const LOCATION_TYPES = [
-  { label: "전국", value: "all" },
-  { label: "서울", value: "seoul" },
-  { label: "경기", value: "gyeonggi" },
-  { label: "인천", value: "incheon" },
-  { label: "강원", value: "gangwon" },
-  { label: "충청", value: "chungcheong" },
-  { label: "전라", value: "jeolla" },
-  { label: "경상", value: "gyeongsang" },
-  { label: "제주", value: "jeju" },
+export const WORK_TYPES = [
+  { label: "원격근무", value: "remote" },
+  { label: "오프라인", value: "offline" },
+  { label: "미정", value: "unknown" },
 ] as const;
 
 export const JOB_SALARY_TYPES = [
