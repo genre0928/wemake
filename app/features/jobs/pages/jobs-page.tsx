@@ -38,14 +38,14 @@ export default function JobsPage() {
           ))}
         </div>
         {/* 직업 검색 필터 섹션 */}
-        <div className="grid col-span-2 border border-gray-200 rounded-lg p-5 space-y-5">
+        <div className="grid col-span-2 border border-gray-200 rounded-lg p-5 space-y-5 sticky top-20">
           <h2 className="text-2xl font-bold flex items-center gap-2 justify-center">
             검색 필터 섹션
           </h2>
           <div>
             {/* 필터별 섹션 */}
             <div className="space-y-5">
-              {/* 직업 유형 필터터 */}
+              {/* 직업 유형 필터 */}
               <div className="space-y-2">
                 <h3 className="text-lg font-bold">직업 유형</h3>
                 <div className="flex flex-wrap gap-2">
