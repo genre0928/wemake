@@ -14,17 +14,19 @@ interface InputPairProps {
 export default function InputPair({
   label,
   description,
-  textArea = true,
+  textArea = false,
   rows,
   ...rest
 }: InputPairProps &
   InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>) {
   return (
-    <div className="flex flex-col max-w-2xl gap-2">
-      {label && description && (
+    <div className="flex flex-col max-w-2xl gap-3">
+      {(label || description) && (
         <Label htmlFor={rest.name} className="flex flex-col items-start gap-1">
-          <div>{label}</div>
-          <small className="text-muted-foreground">{description}</small>
+          {label && <div>{label}</div>}
+          {description && (
+            <small className="text-muted-foreground">{description}</small>
+          )}
         </Label>
       )}
       {textArea ? <Textarea {...rest} /> : <Input {...rest} />}
