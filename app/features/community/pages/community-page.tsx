@@ -115,7 +115,7 @@ export default function CommunityPage() {
               {/*포스트 생성 섹션 */}
               <div>
                 <Button asChild>
-                  <Link to={`/community/new`}>게시물 작성하기</Link>
+                  <Link to={`/community/create`}>게시물 작성하기</Link>
                 </Button>
               </div>
             </div>
