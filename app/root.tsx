@@ -11,6 +11,7 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import Navigation from "./common/components/navigation";
+import type React from "react";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -25,13 +26,9 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-export function Layout({
-  children,
-  isAuth,
-}: {
-  children: React.ReactNode;
-  isAuth: boolean;
-}) {
+export function Layout({ children }: { children: React.ReactNode }) {
+  const { pathname } = useLocation();
+  const isAuth = pathname.startsWith("/auth");
   return (
     <html lang="en" className="dark">
       <head>
@@ -41,7 +38,7 @@ export function Layout({
         <Links />
       </head>
       <body>
-        <main className={isAuth ? "px-20" : ""}>{children}</main>
+        <main className={!isAuth ? "px-20" : ""}>{children}</main>
 
         <ScrollRestoration />
         <Scripts />
