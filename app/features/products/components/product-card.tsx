@@ -58,7 +58,7 @@ export function ProductCard({
           </div>
         </CardHeader>
         <CardFooter>
-          <Button variant="outline" className="flex flex-col h-16 w-16">
+          <Button variant="outline" className="flex flex-col size-16">
             {isLiked ? (
               <HeartIcon className="size-4 shrink-0 fill-red-500 stroke-red-500" />
             ) : (

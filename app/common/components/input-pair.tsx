@@ -20,7 +20,7 @@ export default function InputPair({
 }: InputPairProps &
   InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>) {
   return (
-    <div className="flex flex-col max-w-2xl gap-3">
+    <div className="flex flex-col gap-3 w-full">
       {(label || description) && (
         <Label htmlFor={rest.name} className="flex flex-col items-start gap-1">
           {label && <div>{label}</div>}

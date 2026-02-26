@@ -1,7 +1,18 @@
 import { Link } from "react-router";
 import { Button } from "~/common/components/ui/button";
-import { Card, CardFooter, CardHeader, CardTitle } from "~/common/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avatar";
+import {
+  Card,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/common/components/ui/card";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "~/common/components/ui/avatar";
+import { HeartIcon } from "lucide-react";
+import { cn } from "~/lib/utils";
 
 export interface PostCardProps {
   postId: string;
@@ -11,6 +22,7 @@ export interface PostCardProps {
   timeAgo: string;
   avatarSrc?: string;
   avatarFallback?: string;
+  expanded?: boolean;
 }
 
 export function PostCard({
@@ -21,11 +33,27 @@ export function PostCard({
   timeAgo,
   avatarSrc = "https://github.com/shadcn.png",
   avatarFallback = "N",
+  expanded = false,
 }: PostCardProps) {
   return (
-    <Link to={`/community/${postId}`}>
-      <Card className="bg-transparent hover:bg-primary/10 transition-colors duration-200 ease-in-out">
-        <CardHeader className="flex flex-row items-center gap-2">
+    <Card
+      className={cn(
+        "bg-transparent hover:bg-primary/10 transition-colors duration-200 ease-in-out",
+        expanded && "flex flex-row items-center justify-between",
+      )}
+    >
+      <Link
+        to={`/community/${postId}`}
+        className={cn(expanded && "flex-1 min-w-0")}
+      >
+        <CardHeader
+          className={cn(
+            "gap-5",
+            expanded
+              ? "flex flex-row items-center flex-1 min-w-0"
+              : "flex w-32",
+          )}
+        >
           <Avatar className="size-14">
             <AvatarFallback>{avatarFallback}</AvatarFallback>
             <AvatarImage src={avatarSrc} />
@@ -42,12 +70,22 @@ export function PostCard({
             </div>
           </div>
         </CardHeader>
+      </Link>
+      {!expanded && (
         <CardFooter className="flex justify-end">
           <Button variant="link" asChild>
             <Link to={`/community/${postId}`}>댓글 →</Link>
           </Button>
         </CardFooter>
-      </Card>
-    </Link>
+      )}
+      {expanded && (
+        <CardFooter>
+          <Button variant="outline" className="flex flex-col size-16">
+            <HeartIcon className="size-4 shrink-0" />
+            <span>10</span>
+          </Button>
+        </CardFooter>
+      )}
+    </Card>
   );
 }
