@@ -19,7 +19,7 @@ export default function SettingsPage() {
       <div className="grid grid-cols-6 items-start gap-40">
         {/* 유저정보 설정 섹션 */}
         <div className="col-span-4 flex flex-col gap-10">
-          <h2 className="text-2xl font-bold">프로필 편집</h2>
+          <h2 className="text-2xl font-bold">나의 프로필 수정</h2>
           <Form className="space-y-15">
             <InputPair
               label="아이디"
@@ -52,13 +52,13 @@ export default function SettingsPage() {
         {/* 아바타 설정 섹션 */}
         <div className="col-span-2 border rounded-lg shadow-sm p-6 h-full space-y-10">
           <span className="text-lg font-bold text-center block">
-            아바타 이미지 설정
+            아바타 이미지 수정
           </span>
-          <div className="size-48 rounded-full shadow-xl border mx-auto">
+          <div className="w-full max-w-40 aspect-square rounded-full shadow-xl border mx-auto overflow-hidden flex items-center justify-center bg-muted/50">
             <img
               src={image ? URL.createObjectURL(image) : "/images/avatar.png"}
               alt="아바타 이미지"
-              className="size-full object-contain rounded-full"
+              className="size-full object-contain"
             />
           </div>
 
