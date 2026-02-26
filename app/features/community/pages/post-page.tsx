@@ -97,6 +97,7 @@ export default function PostPage() {
             nickname="닉네임"
             content="나는 이 글의 내용에 대해 전적으로 동의해, 왜냐하면 나도 비슷한 경험이 있기 때문이야"
             timeAgo="1분 전"
+            topLevel
           />
         </div>
       </div>

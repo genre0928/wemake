@@ -1,5 +1,7 @@
 import { ReplyIcon } from "lucide-react";
-import { Link } from "react-router";
+import { useState } from "react";
+import { Form, Link } from "react-router";
+import InputPair from "~/common/components/input-pair";
 import {
   Avatar,
   AvatarFallback,
@@ -13,6 +15,7 @@ export interface ReplyCardProps {
   timeAgo: string;
   avatarSrc?: string;
   avatarFallback?: string;
+  topLevel: boolean;
 }
 
 export function ReplyCard({
@@ -21,7 +24,12 @@ export function ReplyCard({
   timeAgo,
   avatarSrc = "https://github.com/shadcn.png",
   avatarFallback = "CN",
+  topLevel,
 }: ReplyCardProps) {
+  const [replying, setReplying] = useState(false);
+  const toggleReplying = () => {
+    setReplying((prev) => !prev);
+  };
   return (
     <div className="flex flex-col gap-5 w-2/3">
       <div className="flex gap-5">
@@ -39,12 +47,44 @@ export function ReplyCard({
             </div>
             <p>{content}</p>
           </div>
-          <div>
-            <Button variant="ghost">
-              <ReplyIcon className="size-4" />
-              답글 작성
-            </Button>
-          </div>
+          {!replying ? (
+            <div>
+              <Button variant="ghost" onClick={toggleReplying}>
+                <ReplyIcon className="size-4" />
+                답글 작성
+              </Button>
+            </div>
+          ) : (
+            <Form className="flex flex-col gap-5">
+              <div className="flex gap-5">
+                <Avatar className="size-10">
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <InputPair
+                  name="comment"
+                  id="comment"
+                  placeholder="댓글을 입력해주세요"
+                  textArea
+                />
+              </div>
+              <div className="flex justify-end">
+                <Button variant="default" type="submit">
+                  댓글 작성
+                </Button>
+              </div>
+            </Form>
+          )}
+          {topLevel && (
+            <div className="flex flex-col gap-5">
+              <ReplyCard
+                nickname="닉네임"
+                content="나는 이 글의 내용에 대해 전적으로 동의해, 왜냐하면 나도 비슷한 경험이 있기 때문이야"
+                timeAgo="1분 전"
+                topLevel={false}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
