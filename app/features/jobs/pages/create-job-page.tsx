@@ -117,7 +117,9 @@ export default function CreateJobPage() {
             }))}
           />
         </div>
-        <Button>작성하기 (\500원)</Button>
+        <Button className="w-full" type="submit">
+          공고 등록하기
+        </Button>
       </Form>
     </div>
   );
