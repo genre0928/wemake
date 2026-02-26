@@ -24,11 +24,11 @@ export default function SubmitPage() {
     }
   };
   return (
-    <div className="space-y-20">
+    <div className="space-y-10">
       <Hero title="제품 제출" description="제품 제출 페이지" />
       <Form className="flex flex-col max-w-5xl mx-auto gap-20">
-        <div className="flex gap-10">
-          <div className="flex flex-col gap-7">
+        <div className="flex gap-15">
+          <div className="flex flex-col gap-7 flex-1">
             <InputPair
               label="제품 이름"
               description="제품의 이름을 작성해주세요"

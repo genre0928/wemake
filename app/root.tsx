@@ -54,7 +54,7 @@ export default function App() {
     <div className={!isAuth ? "py-28" : ""}>
       {!isAuth && (
         <Navigation
-          isLoggedIn={false}
+          isLoggedIn={true}
           hasNotifications={true}
           hasMessages={true}
         />
