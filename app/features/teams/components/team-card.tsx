@@ -7,7 +7,11 @@ import {
   CardTitle,
 } from "~/common/components/ui/card";
 import { Badge } from "~/common/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "~/common/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "~/common/components/ui/avatar";
 import { SquareArrowOutUpRight } from "lucide-react";
 
 export interface TeamCardProps {
@@ -58,10 +62,7 @@ export function TeamCard({
       </CardContent>
       <CardFooter className="flex justify-end">
         <div>
-          <Badge
-            variant="ghost"
-            className="flex items-center gap-2 text-base"
-          >
+          <Badge variant="ghost" className="flex items-center gap-2 text-base">
             <span>@{authorNickname}</span>
             <Avatar className="size-4">
               <AvatarImage src={authorAvatarUrl} />
