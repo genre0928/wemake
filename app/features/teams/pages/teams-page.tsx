@@ -4,7 +4,7 @@ import { TeamCard } from "../components/team-card";
 export default function TeamsPage() {
   return (
     <div className="space-y-10">
-      <Hero title="팀" description="팀 페이지" />
+      <Hero title="모든 팀" description="현재 생성된 모든 팀을 확인해보세요" />
       <div className="grid grid-cols-4 gap-4">
         {Array.from({ length: 10 }).map((_, index) => (
           <TeamCard

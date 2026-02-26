@@ -34,7 +34,7 @@ export function TeamCard({
   authorAvatarFallback = "N",
 }: TeamCardProps) {
   return (
-    <Card className="bg-transparent hover:bg-primary/10 transition-colors duration-200 ease-in-out">
+    <Card className="bg-transparent hover:bg-primary/10">
       <CardHeader className="flex items-center justify-between">
         <CardTitle className="line-clamp-1 text-xl flex items-center justify-between">
           <span>{title}</span>
@@ -43,7 +43,7 @@ export function TeamCard({
           to={`/teams/${teamId}`}
           className="group inline-flex focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <SquareArrowOutUpRight className="size-6 icon-float-on-group-hover" />
+          <SquareArrowOutUpRight className="size-6" />
         </Link>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -63,11 +63,11 @@ export function TeamCard({
       <CardFooter className="flex justify-end">
         <div>
           <Badge variant="ghost" className="flex items-center gap-2 text-base">
-            <span>@{authorNickname}</span>
-            <Avatar className="size-4">
+            <Avatar className="size-6">
               <AvatarImage src={authorAvatarUrl} />
               <AvatarFallback>{authorAvatarFallback}</AvatarFallback>
             </Avatar>
+            <span className="text-sm text-muted-foreground">@{authorNickname}</span>
           </Badge>
         </div>
       </CardFooter>
