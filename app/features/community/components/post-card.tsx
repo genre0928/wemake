@@ -11,7 +11,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "~/common/components/ui/avatar";
-import { HeartIcon } from "lucide-react";
+import { DotIcon, HeartIcon } from "lucide-react";
 import { cn } from "~/lib/utils";
 
 export interface PostCardProps {
@@ -38,7 +38,7 @@ export function PostCard({
   return (
     <Card
       className={cn(
-        "bg-transparent hover:bg-primary/10 transition-colors duration-200 ease-in-out",
+        "bg-transparent hover:bg-primary/10",
         expanded && "flex flex-row items-center justify-between",
       )}
     >
@@ -47,12 +47,7 @@ export function PostCard({
         className={cn(expanded && "flex-1 min-w-0")}
       >
         <CardHeader
-          className={cn(
-            "gap-5",
-            expanded
-              ? "flex flex-row items-center flex-1 min-w-0"
-              : "flex w-32",
-          )}
+          className={cn("gap-5", "flex flex-row items-center flex-1 min-w-0")}
         >
           <Avatar className="size-14">
             <AvatarFallback>{avatarFallback}</AvatarFallback>
@@ -62,10 +57,10 @@ export function PostCard({
             <CardTitle className="text-2xl font-semibold leading-none tracking-tight">
               {title}
             </CardTitle>
-            <div className="flex gap-2 text-sm leading-tight text-muted-foreground">
+            <div className="flex gap-1 text-sm leading-tight text-muted-foreground">
               <span>{author}</span>
               <span>{category}</span>
-              <span>.</span>
+              <DotIcon className="size-4" />
               <span>{timeAgo}</span>
             </div>
           </div>
