@@ -12,6 +12,7 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import Navigation from "./common/components/navigation";
 import type React from "react";
+import { cn } from "./lib/utils";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -48,7 +49,7 @@ export default function App() {
   const location = useLocation();
   const isAuth = location.pathname.startsWith("/auth");
   return (
-    <div className="px-20 py-28">
+    <div className={cn("px-20 py-28", isAuth && "px-0 py-0")}>
       {!isAuth && (
         <Navigation
           isLoggedIn={true}

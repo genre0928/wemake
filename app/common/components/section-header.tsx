@@ -15,13 +15,13 @@ export function SectionHeader({
   linkText,
 }: SectionHeaderProps) {
   return (
-    <div>
-      <h2 className="text-5xl font-bold leading-tight tracking-tight">
+    <div className="space-y-2">
+      <h2 className="text-4xl font-bold leading-tight tracking-tight">
         {title}
       </h2>
-      <p className="text-xl font-light text-foreground">{description}</p>
+      <p className="text-md font-light text-foreground">{description}</p>
       {linkTo != null && linkText != null && (
-        <Button variant="link" asChild className="text-lg p-0">
+        <Button variant="link" asChild className="text-lg pl-0">
           <Link to={linkTo}>{linkText} →</Link>
         </Button>
       )}

@@ -15,6 +15,7 @@ import {
 import { Badge } from "../components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { SquareArrowOutUpRight } from "lucide-react";
+import { IconCloud } from "../components/ui/icon-cloud";
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -25,7 +26,7 @@ export const meta: Route.MetaFunction = () => {
 
 export default function HomePage() {
   return (
-    <div className="space-y-40">
+    <div className="space-y-30">
       {/* 오늘의 제품 */}
       <div className="grid grid-cols-3 gap-4">
         <SectionHeader
