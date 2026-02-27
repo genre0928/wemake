@@ -23,7 +23,7 @@ export default function JobsPage() {
       {/* 직업 컨텐츠 섹션 */}
       <div className="grid grid-cols-6 gap-20 items-start">
         {/* 직업 카드 섹션 */}
-        <div className="grid grid-cols-3 col-span-4 gap-5">
+        <div className="grid grid-cols-4 col-span-4 gap-5">
           {Array.from({ length: 10 }).map((_, index) => (
             <JobCard
               key={index}
