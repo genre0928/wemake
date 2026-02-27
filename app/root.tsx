@@ -27,10 +27,8 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { pathname } = useLocation();
-  const isAuth = pathname.startsWith("/auth");
   return (
-    <html lang="en" className="dark">
+    <html lang="ko" className="dark">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -38,7 +36,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <main className={!isAuth ? "px-20" : ""}>{children}</main>
+        <main>{children}</main>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -47,10 +45,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const { pathname } = useLocation();
-  const isAuth = pathname.startsWith("/auth");
+  const location = useLocation();
+  const isAuth = location.pathname.startsWith("/auth");
   return (
-    <div className={!isAuth ? "py-28" : ""}>
+    <div className="px-20 py-28">
       {!isAuth && (
         <Navigation
           isLoggedIn={true}

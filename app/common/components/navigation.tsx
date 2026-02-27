@@ -14,7 +14,9 @@ import {
   BellIcon,
   LogOutIcon,
   MessageCircleIcon,
+  MoonIcon,
   SettingsIcon,
+  SunIcon,
   UserIcon,
 } from "lucide-react";
 import {
@@ -27,6 +29,9 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Switch } from "./ui/switch";
+import { Label } from "./ui/label";
+import { useEffect, useState } from "react";
 
 const menus = [
   {
@@ -150,12 +155,27 @@ export default function Navigation({
   hasNotifications,
   hasMessages,
 }: NavigationProps) {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const handleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
+  useEffect(()=> {
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDarkMode]);
+
   return (
-    <nav className="flex px-20 h-16 items-center justify-between backdrop-blur fixed top-0 left-0 right-0 z-50 bg-background/50">
-      <div className="flex items-center gap-10">
+    <nav className="flex px-20 h-16 items-center justify-between backdrop-blur fixed top-0 left-0 right-0 z-50 bg-background/50 gap-20">
+      <div className="flex items-center gap-15">
+        {/* 로고 섹션 */}
         <Link to="/" className="font-bold tracking-tighter text-lg">
           WeMake
         </Link>
+        {/* 네비게이션 메뉴 */}
         <NavigationMenu>
           <NavigationMenuList>
             {menus.map((menu) =>
@@ -208,69 +228,23 @@ export default function Navigation({
           </NavigationMenuList>
         </NavigationMenu>
       </div>
-      {isLoggedIn ? (
-        <div className="flex items-center gap-4">
-          <Button size="icon" variant="ghost" asChild className="relative">
-            <Link to="/my/notifications">
-              <BellIcon className="size-4" />
-              {hasNotifications && (
-                <div className="absolute top-1.5 right-1.5 size-2 bg-red-500 rounded-full" />
-              )}
-            </Link>
-          </Button>
-          <Button size="icon" variant="ghost" asChild className="relative">
-            <Link to="/my/messages">
-              <MessageCircleIcon className="size-4" />
-              {hasMessages && (
-                <div className="absolute top-1.5 right-1.5 size-2 bg-red-500 rounded-full" />
-              )}
-            </Link>
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Avatar>
-                <AvatarImage src="https://github.com/serranoarevalo.png" />
-                <AvatarFallback>N</AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel className="flex flex-col">
-                <span className="font-medium">John Doe</span>
-                <span className="text-xs text-muted-foreground">@username</span>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/my/dashboard">
-                    <BarChart3Icon className="size-4 mr-2" />
-                    대시보드
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/my/users/userId">
-                    <UserIcon className="size-4 mr-2" />
-                    프로필
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer">
-                  <Link to="/my/settings">
-                    <SettingsIcon className="size-4 mr-2" />
-                    설정
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild className="cursor-pointer">
-                <Link to="/auth/logout">
-                  <LogOutIcon className="size-4 mr-2" />
-                  로그아웃
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+
+      {/* Auth 섹션 */}
+      <div className="flex items-center gap-10">
+        <div className="flex items-center gap-3">
+          <Label htmlFor="dark-mode">
+            <SunIcon />
+          </Label>
+          <Switch
+            id="dark-mode"
+            checked={isDarkMode}
+            onCheckedChange={handleDarkMode}
+          />
+          <Label htmlFor="dark-mode">
+            <MoonIcon />
+          </Label>
         </div>
-      ) : (
-        <div className="flex items-center gap-4">
+        <div className="flex gap-4">
           <Button asChild variant="secondary">
             <Link to="/auth/login">로그인</Link>
           </Button>
@@ -278,7 +252,7 @@ export default function Navigation({
             <Link to="/auth/join">회원가입</Link>
           </Button>
         </div>
-      )}
+      </div>
     </nav>
   );
 }
