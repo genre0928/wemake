@@ -7,6 +7,7 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
   NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
 } from "./ui/navigation-menu";
 import { Button } from "./ui/button";
 import {
@@ -32,6 +33,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 import { useEffect, useState } from "react";
+import { cn } from "~/lib/utils";
 
 const menus = [
   {
@@ -160,7 +162,7 @@ export default function Navigation({
     setIsDarkMode(!isDarkMode);
   };
 
-  useEffect(()=> {
+  useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add("dark");
     } else {
@@ -178,30 +180,33 @@ export default function Navigation({
         {/* 네비게이션 메뉴 */}
         <NavigationMenu>
           <NavigationMenuList>
-            {menus.map((menu) =>
-              menu.items?.length ? (
-                <NavigationMenuItem key={menu.name}>
-                  {/* 네비게이션 메뉴 트리거(제품, 직업, 커뮤니티 등) - items가 있을 때만 드롭다운 */}
-                  <Link to={menu.to}>
-                    <NavigationMenuTrigger className="bg-transparent">
+            {menus.map((menu) => (
+              <NavigationMenuItem>
+                {menu.items ? (
+                  <NavigationMenuTrigger className="bg-transparent">
+                    {menu.name}
+                  </NavigationMenuTrigger>
+                ) : (
+                  <NavigationMenuLink asChild>
+                    <Link
+                      to={menu.to}
+                      className={cn(
+                        navigationMenuTriggerStyle(),
+                        "bg-transparent",
+                      )}
+                    >
                       {menu.name}
-                    </NavigationMenuTrigger>
-                  </Link>
+                    </Link>
+                  </NavigationMenuLink>
+                )}
+                {menu.items && (
                   <NavigationMenuContent>
-                    <ul className="grid w-[600px] font-light gap-3 p-4 grid-cols-2">
+                    <NavigationMenuList className="grid grid-cols-2 w-[600px] p-3 [&>*:last-child:nth-child(odd)]:col-span-2">
                       {menu.items.map((item) => (
-                        <NavigationMenuItem
-                          key={item.name}
-                          className="select-none rounded-md transition-colors"
-                        >
+                        <NavigationMenuItem key={item.name}>
                           <NavigationMenuLink asChild>
-                            <Link
-                              className="p-3 space-y-1 block leading-none no-underline outline-none"
-                              to={item.to}
-                            >
-                              <span className="text-sm font-medium leading-none">
-                                {item.name}
-                              </span>
+                            <Link to={item.to}>
+                              {item.name}
                               <p className="text-sm text-muted-foreground">
                                 {item.description}
                               </p>
@@ -209,22 +214,19 @@ export default function Navigation({
                           </NavigationMenuLink>
                         </NavigationMenuItem>
                       ))}
-                    </ul>
+                    </NavigationMenuList>
                   </NavigationMenuContent>
+                )}
+              </NavigationMenuItem>
+            ))}
+            {/* <NavigationMenuItem>
+              <NavigationMenuTrigger>트리거</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <NavigationMenuItem>
+                  <NavigationMenuLink>링크</NavigationMenuLink>
                 </NavigationMenuItem>
-              ) : (
-                <NavigationMenuItem key={menu.name}>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      to={menu.to}
-                      className="px-4 py-2 text-sm font-medium"
-                    >
-                      {menu.name}
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              ),
-            )}
+              </NavigationMenuContent>
+            </NavigationMenuItem> */}
           </NavigationMenuList>
         </NavigationMenu>
       </div>
