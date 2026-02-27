@@ -39,7 +39,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <main className={!isAuth ? "px-20" : ""}>{children}</main>
-
         <ScrollRestoration />
         <Scripts />
       </body>
