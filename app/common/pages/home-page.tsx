@@ -3,7 +3,7 @@ import { SectionHeader } from "../components/section-header";
 import type { Route } from "./+types/home-page";
 import { ProductCard } from "~/features/products/components/product-card";
 import { PostCard } from "~/features/community/components/post-card";
-import { IdeaCard } from "~/features/ideas/idea-card";
+import { IdeaCard } from "~/features/ideas/components/idea-card";
 import { JobCard } from "~/features/jobs/components/job-card";
 import {
   Card,

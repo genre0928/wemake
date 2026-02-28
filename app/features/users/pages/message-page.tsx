@@ -46,7 +46,7 @@ export default function MessagePage() {
         {Array.from({ length: 1 }).map((__, index) => (
           <DmCard
             key={index}
-            isSendUser={index % 2 === 0}
+            isFromMe={index % 2 === 0}
             message="메시지 더미데이터입니다. 내용을 길게 해보겟읍니다ddddddddddd"
             avatarSrc="https://github.com/genre0928.png"
             avatarFallback="N"

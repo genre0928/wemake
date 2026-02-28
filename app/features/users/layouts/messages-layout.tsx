@@ -10,7 +10,9 @@ import { MessageCard } from "../components/message-card";
 
 export default function MessagesLayout() {
   return (
-    <SidebarProvider className="max-h-[calc(100vh-14rem)] overflow-hidden h-[calc(100vh-14rem)] min-h-full">
+    // SidebarProvider 컴포넌트가 flex wrapper 역할을 해주고 있다고 생각해야함
+    <SidebarProvider className="overflow-hidden max-h-[calc(100vh-14rem)] h-[calc(100vh-14rem)] min-h-full">
+      {/* 사이드바 섹션 */}
       <Sidebar variant="floating" className="pt-16">
         <SidebarContent>
           <SidebarGroup>
@@ -28,7 +30,8 @@ export default function MessagesLayout() {
           </SidebarGroup>
         </SidebarContent>
       </Sidebar>
-      <div className="w-full h-full">
+      {/* Outlet 섹션 */}
+      <div className="h-full flex-1">
         <Outlet />
       </div>
     </SidebarProvider>

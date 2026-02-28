@@ -1,4 +1,4 @@
-import { IdeaCard } from "~/features/ideas/idea-card";
+import { IdeaCard } from "~/features/ideas/components/idea-card";
 
 export default function DashboardIdeasPage() {
   return (

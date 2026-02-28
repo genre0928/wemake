@@ -49,7 +49,12 @@ export default function App() {
   const location = useLocation();
   const isAuth = location.pathname.startsWith("/auth");
   return (
-    <div className={cn("px-20 py-28", isAuth && "px-0 py-0")}>
+    <div
+      className={cn(
+        "flex min-h-screen flex-col px-20 py-28",
+        isAuth && "px-0 py-0"
+      )}
+    >
       {!isAuth && (
         <Navigation
           isLoggedIn={true}
@@ -57,7 +62,9 @@ export default function App() {
           hasMessages={true}
         />
       )}
-      <Outlet />
+      <div className="min-h-0 flex-1">
+        <Outlet />
+      </div>
     </div>
   );
 }
