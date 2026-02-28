@@ -1,5 +1,5 @@
 import { Hero } from "~/common/components/hero";
-import { IdeaCard } from "../idea-card";
+import { IdeaCard } from "../components/idea-card";
 import type { Route } from "./+types/idea-page";
 import { useParams } from "react-router";
 import { DotIcon, EyeIcon, HeartIcon } from "lucide-react";

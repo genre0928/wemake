@@ -15,7 +15,7 @@ import {
 export default function DashboardLayout() {
   const location = useLocation();
   return (
-    <SidebarProvider className="max-h-[calc(100vh-14rem)] overflow-hidden h-[calc(100vh-14rem)] min-h-full">
+    <SidebarProvider className="h-full min-h-0 overflow-hidden">
       <Sidebar variant="floating" className="pt-16">
         <SidebarContent>
           <SidebarGroup>

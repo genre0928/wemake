@@ -6,11 +6,9 @@ import AuthButton from "../components/auth-button";
 
 export default function LoginPage() {
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-10 relative">
-      <Button variant="outline" className="absolute top-10 right-10" asChild>
-        <Link to="/auth/join">회원가입</Link>
-      </Button>
-      <div className="flex flex-col items-center justify-center gap-10 w-1/2">
+    <div className="flex flex-col items-center justify-center gap-5 w-1/2 mx-auto">
+      {/* 로그인 섹션 */}
+      <div className="w-full flex flex-col items-center gap-10">
         <h1 className="text-2xl font-semibold">로그인</h1>
         <Form className="w-3/4 space-y-10">
           <div className="flex flex-col gap-5">
@@ -31,13 +29,17 @@ export default function LoginPage() {
               required
             />
           </div>
-
           <Button className="w-full" type="submit">
             로그인
           </Button>
         </Form>
-        <AuthButton />
       </div>
+      {/* 회원가입 버튼 */}
+      <Button variant="link" asChild>
+        <Link to="/auth/join">아직 회원이 아니신가요?</Link>
+      </Button>
+      {/* 소셜 로그인 */}
+      <AuthButton />
     </div>
   );
 }

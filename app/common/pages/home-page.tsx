@@ -3,7 +3,7 @@ import { SectionHeader } from "../components/section-header";
 import type { Route } from "./+types/home-page";
 import { ProductCard } from "~/features/products/components/product-card";
 import { PostCard } from "~/features/community/components/post-card";
-import { IdeaCard } from "~/features/ideas/idea-card";
+import { IdeaCard } from "~/features/ideas/components/idea-card";
 import { JobCard } from "~/features/jobs/components/job-card";
 import {
   Card,
@@ -15,6 +15,7 @@ import {
 import { Badge } from "../components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { SquareArrowOutUpRight } from "lucide-react";
+import { IconCloud } from "../components/ui/icon-cloud";
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -25,23 +26,22 @@ export const meta: Route.MetaFunction = () => {
 
 export default function HomePage() {
   return (
-    <div className="space-y-40">
+    <div className="space-y-30">
       {/* 오늘의 제품 */}
       <div className="grid grid-cols-3 gap-4">
         <SectionHeader
           title="오늘의 제품"
-          description="커뮤니티에서 가장 인기 있는 제품을 확인해보세요."
+          description="오늘 커뮤니티에서 가장 인기 있는 제품을 확인해보세요"
           linkTo="/products/leaderboards"
-          linkText="모든 리더보기 보러가기"
         />
         <ProductCard
           productId="productId"
           name="제품명"
-          description="제품 설명"
+          description="제품 설명이 아주 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요"
           commentCount={10}
           viewCount={10}
           likeCount={10}
-          isLiked={false}
+          isLiked={true}
         />
       </div>
       {/* 토론 */}
@@ -50,7 +50,6 @@ export default function HomePage() {
           title="오늘의 토론"
           description="커뮤니티에서 가장 인기 있는 토론을 확인해보세요."
           linkTo="/community"
-          linkText="모든 토론 보러가기"
         />
         <PostCard
           postId="postId"
@@ -64,9 +63,8 @@ export default function HomePage() {
       <div className="grid grid-cols-3 gap-4">
         <SectionHeader
           title="오늘의 아이디어"
-          description="프로젝트에 필요한 아이디어를 찾아보세요"
+          description="내가 찾는 아이디어를 먼저 선점해보세요"
           linkTo="/ideas"
-          linkText="모든 아이디어 보러가기"
         />
         <IdeaCard
           ideaId="ideaId"
@@ -80,10 +78,9 @@ export default function HomePage() {
       {/* 직업 */}
       <div className="grid grid-cols-4 gap-4">
         <SectionHeader
-          title="오늘의 직업"
-          description="오늘의 직업을 확인해보세요"
+          title="채용 공고"
+          description="현재 채용중인 공고를 확인해보세요"
           linkTo="/jobs"
-          linkText="모든 직업 보러가기"
         />
         <JobCard
           jobId="jobId"
@@ -98,10 +95,9 @@ export default function HomePage() {
       {/* 팀 섹션 */}
       <div className="grid grid-cols-3 gap-4">
         <SectionHeader
-          title="구인구직"
-          description="등록된 모든 팀을 확인해보세요"
+          title="팀원 모집"
+          description="현재 팀원을 모집중인 팀을 확인해보세요"
           linkTo="/teams"
-          linkText="모든 팀 보러가기"
         />
         <Link to="/teams/teamId">
           <Card className="bg-transparent hover:bg-primary/10 transition-colors duration-200 ease-in-out">

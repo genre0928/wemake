@@ -6,24 +6,21 @@ import {
 import { cn } from "~/lib/utils";
 
 export interface DmCardProps {
-  isSendUser: boolean;
+  isFromMe: boolean;
   message: string;
   avatarSrc?: string;
   avatarFallback?: string;
 }
 
 export function DmCard({
-  isSendUser,
+  isFromMe,
   message,
   avatarSrc = "https://github.com/genre0928.png",
   avatarFallback = "N",
 }: DmCardProps) {
   return (
     <div
-      className={cn(
-        "flex items-end gap-4",
-        isSendUser ? "flex-row-reverse" : "",
-      )}
+      className={cn("flex items-end gap-4", isFromMe ? "flex-row-reverse" : "")}
     >
       <Avatar className="size-10">
         <AvatarImage src={avatarSrc} />
@@ -32,7 +29,9 @@ export function DmCard({
       <div
         className={cn(
           "rounded-md p-4 text-sm max-w-1/4",
-          isSendUser ? "bg-primary text-primary-foreground rounded-br-none rounded-bl-none" : "bg-accent rounded-bl-none rounded-br-none",
+          isFromMe
+            ? "bg-primary text-primary-foreground rounded-br-none"
+            : "bg-accent rounded-bl-none",
         )}
       >
         <p>{message}</p>

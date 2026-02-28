@@ -1,5 +1,5 @@
 import { Hero } from "~/common/components/hero";
-import { IdeaCard } from "../idea-card";
+import { IdeaCard } from "../components/idea-card";
 
 export default function IdeasPage() {
   return (

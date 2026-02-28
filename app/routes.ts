@@ -39,7 +39,7 @@ export default [
       route("/:category", "features/products/pages/category-page.tsx"),
     ]),
     route("/search", "features/products/pages/search-page.tsx"),
-    route("/submit", "features/products/pages/submit-page.tsx"),
+    route("/create", "features/products/pages/product-create-page.tsx"),
     route("/promotion", "features/products/pages/promotion-page.tsx"),
     ...prefix("/:productId", [
       index("features/products/pages/product-redirection-page.tsx"),

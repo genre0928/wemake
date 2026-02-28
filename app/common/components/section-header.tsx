@@ -5,24 +5,22 @@ interface SectionHeaderProps {
   title: string;
   description: string;
   linkTo?: string;
-  linkText?: string;
 }
 
 export function SectionHeader({
   title,
   description,
   linkTo,
-  linkText,
 }: SectionHeaderProps) {
   return (
-    <div>
-      <h2 className="text-5xl font-bold leading-tight tracking-tight">
+    <div className="space-y-2">
+      <h2 className="text-4xl font-bold leading-tight tracking-tight">
         {title}
       </h2>
-      <p className="text-xl font-light text-foreground">{description}</p>
-      {linkTo != null && linkText != null && (
-        <Button variant="link" asChild className="text-lg p-0">
-          <Link to={linkTo}>{linkText} →</Link>
+      <p className="text-md font-light text-foreground">{description}</p>
+      {linkTo != null && (
+        <Button variant="link" asChild className="text-lg pl-0">
+          <Link to={linkTo}>더 보기 →</Link>
         </Button>
       )}
     </div>
