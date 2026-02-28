@@ -1,9 +1,10 @@
 import InputPair from "~/common/components/input-pair";
 
 import { Button } from "~/common/components/ui/button";
-import { Form } from "react-router";
+import { Form, useNavigate } from "react-router";
 
 export default function OtpStartPage() {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col items-center justify-center h-full gap-10">
       <div className="flex flex-col items-center justify-center gap-10 w-1/2">

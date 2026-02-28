@@ -17,8 +17,8 @@ export default function LeaderboardPage() {
     <div>
       {/* Hero 섹션 */}
       <Hero
-        title="리더보드 페이지 타이틀"
-        description="리더보드 페이지에 대한 간단한 설명입니다"
+        title="제품 리더보드 페이지"
+        description="현재 등록된 모든 제품을 한 곳에서 확인해보세요"
       />
       <div className="space-y-30">
         {/* 데일리 리더보드 섹션 */}

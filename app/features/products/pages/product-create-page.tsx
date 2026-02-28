@@ -1,5 +1,5 @@
 import { Hero } from "~/common/components/hero";
-import type { Route } from "./+types/submit-page";
+import type { Route } from "./+types/product-create-page";
 import { Form } from "react-router";
 import { Input } from "~/common/components/ui/input";
 import { Label } from "~/common/components/ui/label";
@@ -10,12 +10,12 @@ import { Button } from "~/common/components/ui/button";
 
 export const meta: Route.MetaFunction = () => {
   return [
-    { title: "제품 제출 | Wemake" },
-    { name: "description", content: "제품 제출 페이지" },
+    { title: "제품 등록 | Wemake" },
+    { name: "description", content: "제품 등록 페이지" },
   ];
 };
 
-export default function SubmitPage() {
+export default function ProductCreatePage() {
   const [image, setImage] = useState<File | null>(null);
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -24,8 +24,8 @@ export default function SubmitPage() {
     }
   };
   return (
-    <div className="space-y-10">
-      <Hero title="제품 제출" description="제품 제출 페이지" />
+    <div>
+      <Hero title="제품 등록" description="제품 등록 페이지" />
       <Form className="flex flex-col max-w-5xl mx-auto gap-20">
         <div className="flex gap-15">
           <div className="flex flex-col gap-7 flex-1">

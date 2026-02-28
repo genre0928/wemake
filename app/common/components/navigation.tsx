@@ -56,8 +56,8 @@ const menus = [
         to: "/products/search",
       },
       {
-        name: "제출",
-        description: "제출 페이지",
+        name: "등록",
+        description: "제품 등록 페이지",
         to: "/products/create",
       },
       {
