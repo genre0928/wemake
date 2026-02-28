@@ -11,7 +11,7 @@ export const meta: Route.MetaFunction = () => {
 
 export default function CategoriesPage() {
   return (
-    <div className="space-y-10">
+    <div>
       <Hero
         title="카테고리 모음"
         description="카테고리별로 제품을 확인해보세요"

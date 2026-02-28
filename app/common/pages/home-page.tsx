@@ -38,11 +38,11 @@ export default function HomePage() {
         <ProductCard
           productId="productId"
           name="제품명"
-          description="제품 설명"
+          description="제품 설명이 아주 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요"
           commentCount={10}
           viewCount={10}
           likeCount={10}
-          isLiked={false}
+          isLiked={true}
         />
       </div>
       {/* 토론 */}
