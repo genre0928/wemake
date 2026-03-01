@@ -1,8 +1,8 @@
 // as const 선언을 통해 각 타입의 값을 엄격하게 관리할 수 있음
 export const JOB_TYPES = [
   { label: "전체", value: "all" },
-  { label: "원격근무", value: "remote" },
   { label: "정규직", value: "full-time" },
+  { label: "계약직", value: "contract" },
   { label: "프리랜서", value: "freelance" },
   { label: "인턴십", value: "internship" },
 ] as const;
