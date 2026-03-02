@@ -22,6 +22,13 @@
       "when": 1772427449936,
       "tag": "0002_motionless_starfox",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1772428360364,
+      "tag": "0003_organic_boomerang",
+      "breakpoints": true
     }
   ]
 }
