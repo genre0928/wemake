@@ -20,12 +20,19 @@ export default function SettingsPage() {
         {/* 유저정보 설정 섹션 */}
         <div className="col-span-4 flex flex-col gap-10">
           <h2 className="text-2xl font-bold">나의 프로필 수정</h2>
-          <Form className="space-y-15">
+          <Form className="space-y-10">
             <InputPair
-              label="아이디"
-              name="id"
-              id="id"
-              placeholder="userID"
+              label="이름"
+              name="name"
+              id="name"
+              placeholder="이름"
+              disabled
+            />
+            <InputPair
+              label="이메일"
+              name="email"
+              id="email"
+              placeholder="example@example.com"
               disabled
             />
             <InputPair
