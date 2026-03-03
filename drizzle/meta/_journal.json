@@ -36,6 +36,27 @@
       "when": 1772429551002,
       "tag": "0004_known_nightcrawler",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1772430879124,
+      "tag": "0005_lonely_betty_brant",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1772430944631,
+      "tag": "0006_marvelous_slipstream",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1772433329756,
+      "tag": "0007_mushy_white_queen",
+      "breakpoints": true
     }
   ]
 }
