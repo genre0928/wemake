@@ -1,0 +1,1 @@
+CREATE TYPE "public"."team_stage" AS ENUM('initial', 'prototype', 'operation');

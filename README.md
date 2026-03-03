@@ -1,42 +1,29 @@
-# 🚀 wemake 프로젝트
+# 🚀 wemake 클론 프로젝트
 
-> Vite 기반 wemake 프로젝트트
+> nomad코더 강의 wemake 제작을 기반으로 프로젝트의 생성부터 배포까지 라이프사이클을 경험하고, 라이브러리와 함수 등을 배우고 익히는 프로젝트이다
+> 개인적으로 더 공부하여 구현하고자 하는 내용들의 구현도 예정
 
 ## ✨ 주요 특징
 
 - 🔥 **최신 기술 스택**: Vite, React 19, React Router v7
 - 🎨 **현대적 UI**: Tailwind CSS v4 + shadcn/ui 디자인 시스템
-  <!-- - 🛠️ **개발자 경험**: Turbopack, ESLint, Prettier, Husky -->
-  <!-- - 📱 **반응형 디자인**: 모바일 우선 반응형 레이아웃 -->
 - 🌙 **다크 모드**: 내장 다크/라이트 모드 지원
-<!-- - 🔧 **자동화**: Git 훅을 통한 코드 품질 자동 검사 -->
 - 📝 **타입 안정성**: 엄격한 TypeScript 설정
 
 ## 🛠️ 기술 스택
 
-### **Frontend**
-
-- **Framework**: Next.js 15.3.5 (App Router)
-- **Library**: React 19.0.0
+- **Framework**: React Router 7.12.0
+- **Library**: React 19.2.4
 - **Language**: TypeScript 5
 - **Styling**: Tailwind CSS v4
 - **UI Components**: shadcn/ui
 - **Icons**: Lucide React
-- **Fonts**: Geist Sans & Geist Mono
 
 ### **개발 도구**
 
 - **Build Tool**: Turbopack (개발 서버)
-- **Linting**: ESLint 9 + Next.js 규칙
 - **Formatting**: Prettier 3.6.2
-- **Git Hooks**: Husky 9.1.7 + lint-staged
 - **Package Manager**: npm
-
-### **유틸리티**
-
-- **Class Management**: clsx, tailwind-merge
-- **Component Variants**: class-variance-authority
-- **Animations**: tw-animate-css
 
 ## 📁 프로젝트 구조
 
@@ -183,6 +170,8 @@ GitHub Issues를 통해 다음 유형의 이슈를 생성할 수 있습니다:
 Luxon - 날짜 라이브러리
 zod - 입력 검증 라이브러리
 Magic UI - 애니메이션 라이브러리
+Supabase - BaaS(Backend as a Service)
+Drizzle ORM - SQL을 사용자 언어로 작성하게 도와주는 라이브러리(타입안정성 향상)
 
 오류 해결이 필요한 목록 리스트
 

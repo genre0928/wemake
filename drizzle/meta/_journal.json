@@ -1,0 +1,62 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1772356037166,
+      "tag": "0000_high_loa",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772424680302,
+      "tag": "0001_cuddly_layla_miller",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1772427449936,
+      "tag": "0002_motionless_starfox",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1772428360364,
+      "tag": "0003_organic_boomerang",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1772429551002,
+      "tag": "0004_known_nightcrawler",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1772430879124,
+      "tag": "0005_lonely_betty_brant",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1772430944631,
+      "tag": "0006_marvelous_slipstream",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1772433329756,
+      "tag": "0007_mushy_white_queen",
+      "breakpoints": true
+    }
+  ]
+}
