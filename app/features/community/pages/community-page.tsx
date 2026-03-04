@@ -6,24 +6,33 @@ import {
   SORT_OPTIONS,
 } from "../constants";
 import { Button } from "~/common/components/ui/button";
-import { Form, Link, useSearchParams } from "react-router";
+import { Await, Form, Link, useSearchParams } from "react-router";
 import {
   DropdownMenu,
-  DropdownMenuItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
   DropdownMenuCheckboxItem,
 } from "~/common/components/ui/dropdown-menu";
 import { ChevronDownIcon } from "lucide-react";
-import { Dropdown } from "react-day-picker";
 import { Input } from "~/common/components/ui/input";
+import { getPosts, getTopics } from "../queries";
+import { posts, topics } from "../schema";
+import type { Route } from "./+types/community-page";
+import { Suspense } from "react";
 
-export default function CommunityPage() {
+export const loader = async () => {
+  // const topics = await getTopics();
+  // const posts = await getPosts();
+  const [topics, posts] = await Promise.all([getTopics(), getPosts()]);
+  return { topics, posts };
+};
+
+export default function CommunityPage({ loaderData }: Route.ComponentProps) {
+  // const { topics, posts } = loaderData;
   const [searchParams, setSearchParams] = useSearchParams();
   const sort = searchParams.get("sort") || "newest";
   const period = searchParams.get("period") || "daily";
   const category = searchParams.get("category") || "";
-
   const onSortChange = (value: string) => {
     searchParams.set("sort", value);
     setSearchParams(searchParams);
@@ -120,39 +129,40 @@ export default function CommunityPage() {
               </div>
             </div>
             {/* 포스트카드 섹션 */}
-            <div className="w-full space-y-10">
-              {Array.from({ length: 10 }).map((_, index) => (
+            <Suspense fallback={<div>Loading...</div>}>
+              {loaderData.posts.map((post) => (
                 <PostCard
-                  key={index}
-                  postId={`postId-${index}`}
-                  title="게시물 제목"
-                  author="작성자"
-                  category="카테고리"
-                  timeAgo="12시간 전"
+                  key={post.post_id}
+                  postId={post.post_id!}
+                  title={post.title!}
+                  author={post.nickname!}
+                  category={post.topic!}
+                  timeAgo={new Date(post.created_at!)}
                   expanded={true}
+                  upvotes={post.upvotes!}
                 />
               ))}
-            </div>
+            </Suspense>
           </div>
         </div>
         {/* 커뮤니티 사이드바 섹션 */}
         <aside className="col-span-2 flex flex-col w-full items-center justify-center gap-4">
           <span className="text-2xl font-bold">카테고리</span>
-          <div className="flex flex-col gap-2">
-            {COMMUNITY_POST_CATEGORIES.map(
-              (category: { label: string; value: string }) => (
+          <Suspense fallback={<div>Loading...</div>}>
+            {loaderData.topics.map((topic) => (
+              <div className="flex flex-col gap-2">
                 <Button
                   className="text-sm text-foreground"
                   variant="link"
                   asChild
                 >
-                  <Link to={`/community?category=${category.value}`}>
-                    {category.label}
+                  <Link to={`/community?category=${topic.name}`}>
+                    {topic.name}
                   </Link>
                 </Button>
-              ),
-            )}
-          </div>
+              </div>
+            ))}
+          </Suspense>
         </aside>
       </div>
     </div>

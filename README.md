@@ -173,6 +173,18 @@ Magic UI - 애니메이션 라이브러리
 Supabase - BaaS(Backend as a Service)
 Drizzle ORM - SQL을 사용자 언어로 작성하게 도와주는 라이브러리(타입안정성 향상)
 
+Data 로딩 전략
+1. 비동기
+2. <await>
+3. prefetch
+4. clientLoader + HydrateFallback() 로딩 렌더링 요소 // loader()이랑 같이사용 가능해서 browse에서 필요한 데이터 따로 가져올 수 있음
+
+prefetch props - 속성의 조건에 따라 이동하고자 하는 웹페이지의 렌더링을 미리 진행함
+none - prefetch 미진행
+intent - mouse hover 시
+viewport - 사용자의 view에 요소가 진입할 때
+render - 요소가 렌더링 될 때
+
 오류 해결이 필요한 목록 리스트
 
 1. 제품 상세 페이지에서 미리 보기, 리뷰 보기 버튼의 navlink를 활용한 조건부 스타일 적용 시 버튼에 직접 적용되는 것이 아님 // 이를 해결할 수 있는 방법 찾아보기

@@ -183,9 +183,11 @@ export default function Navigation({
             {menus.map((menu) => (
               <NavigationMenuItem>
                 {menu.items ? (
-                  <NavigationMenuTrigger className="bg-transparent">
-                    {menu.name}
-                  </NavigationMenuTrigger>
+                  <Link to={menu.to} prefetch="intent">
+                    <NavigationMenuTrigger className="bg-transparent">
+                      {menu.name}
+                    </NavigationMenuTrigger>
+                  </Link>
                 ) : (
                   <NavigationMenuLink asChild>
                     <Link

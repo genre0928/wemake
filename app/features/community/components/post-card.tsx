@@ -13,16 +13,18 @@ import {
 } from "~/common/components/ui/avatar";
 import { DotIcon, HeartIcon } from "lucide-react";
 import { cn } from "~/lib/utils";
+import { DateTime } from "luxon";
 
 export interface PostCardProps {
-  postId: string;
+  postId: number;
   title: string;
   author: string;
   category: string;
-  timeAgo: string;
+  timeAgo: Date;
   avatarSrc?: string;
   avatarFallback?: string;
   expanded?: boolean;
+  upvotes: number;
 }
 
 export function PostCard({
@@ -34,6 +36,7 @@ export function PostCard({
   avatarSrc = "https://github.com/shadcn.png",
   avatarFallback = "N",
   expanded = false,
+  upvotes,
 }: PostCardProps) {
   return (
     <Card
@@ -61,7 +64,7 @@ export function PostCard({
               <span>{author}</span>
               <span>{category}</span>
               <DotIcon className="size-4" />
-              <span>{timeAgo}</span>
+              <span>{DateTime.fromJSDate(timeAgo).toRelative()}</span>
             </div>
           </div>
         </CardHeader>
@@ -77,7 +80,7 @@ export function PostCard({
         <CardFooter>
           <Button variant="outline" className="flex flex-col size-16">
             <HeartIcon className="size-4 shrink-0" />
-            <span>10</span>
+            <span>{upvotes}</span>
           </Button>
         </CardFooter>
       )}

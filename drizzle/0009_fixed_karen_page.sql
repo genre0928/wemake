@@ -1,0 +1,1 @@
+ALTER TABLE "products" ADD COLUMN "upvotes" bigint DEFAULT 0 NOT NULL;

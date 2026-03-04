@@ -30,6 +30,7 @@ export const products = pgTable("products", {
   ),
   created_at: timestamp().notNull().defaultNow(),
   updated_at: timestamp().notNull().defaultNow(),
+  upvotes: bigint({ mode: "number" }).notNull().default(0),
 });
 
 export const categories = pgTable("categories", {

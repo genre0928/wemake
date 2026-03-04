@@ -9,11 +9,13 @@
     "typecheck": "react-router typegen && tsc",
     "db:generate": "drizzle-kit generate --config=./app/drizzle.config.ts",
     "db:migrate": "drizzle-kit migrate --config=./app/drizzle.config.ts",
-    "db:studio": "drizzle-kit studio --config=./app/drizzle.config.ts"
+    "db:studio": "drizzle-kit studio --config=./app/drizzle.config.ts",
+    "db:typegen": "npx supabase gen types typescript --project-id abwnuiykpzvhpquyrndi > database.types.ts"
   },
   "dependencies": {
     "@react-router/node": "7.12.0",
     "@react-router/serve": "7.12.0",
+    "@supabase/supabase-js": "^2.98.0",
     "@tailwindcss/postcss": "^4.1.18",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -32,6 +34,7 @@
     "recharts": "^2.15.4",
     "tailwind-merge": "^3.4.0",
     "tailwind-scrollbar-hide": "^4.0.0",
+    "type-fest": "^5.4.4",
     "zod": "^4.3.6"
   },
   "devDependencies": {

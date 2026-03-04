@@ -24,9 +24,9 @@ export function ProductCard({
   productId,
   name,
   description,
-  commentCount = 10,
-  viewCount = 10,
-  likeCount = 10,
+  commentCount,
+  viewCount,
+  likeCount,
   isLiked,
 }: ProductCardProps) {
   return (
