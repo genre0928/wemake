@@ -16,6 +16,8 @@ import { Badge } from "../components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { SquareArrowOutUpRight } from "lucide-react";
 import { IconCloud } from "../components/ui/icon-cloud";
+import { getProductsByDateRange } from "~/features/products/queries";
+import { DateTime } from "luxon";
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -24,7 +26,17 @@ export const meta: Route.MetaFunction = () => {
   ];
 };
 
-export default function HomePage() {
+export const loader = async () => {
+  const products = await getProductsByDateRange({
+    startDate: DateTime.now().startOf("day"),
+    endDate: DateTime.now().endOf("day"),
+    limit: 7,
+  });
+  return { products };
+};
+
+export default function HomePage({ loaderData }: Route.ComponentProps) {
+  console.log(loaderData);
   return (
     <div className="space-y-30">
       {/* 오늘의 제품 */}
@@ -34,15 +46,19 @@ export default function HomePage() {
           description="오늘 커뮤니티에서 가장 인기 있는 제품을 확인해보세요"
           linkTo="/products/leaderboards"
         />
-        <ProductCard
-          productId="productId"
-          name="제품명"
-          description="제품 설명이 아주 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요 길어요"
-          commentCount={10}
-          viewCount={10}
-          likeCount={10}
-          isLiked={true}
-        />
+        {loaderData.products.map((product) => {
+          const stats = product.stats as { reviews: number; views: number };
+          return (
+            <ProductCard
+              productId={product.product_id}
+              name={product.name}
+              description={product.description}
+              commentCount={stats?.reviews}
+              viewCount={stats?.views}
+              likeCount={product.upvotes}
+            />
+          );
+        })}
       </div>
       {/* 토론 */}
       <div className="grid grid-cols-3 gap-4">
@@ -52,11 +68,12 @@ export default function HomePage() {
           linkTo="/community"
         />
         <PostCard
-          postId="postId"
+          postId={1}
           title="토론 제목"
           author="작성자"
           category="카테고리"
-          timeAgo="12시간 전"
+          timeAgo={DateTime.now().minus({ hours: 12 }).toJSDate()}
+          upvotes={10}
         />
       </div>
       {/* 아이디어 */}

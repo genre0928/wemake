@@ -7,7 +7,7 @@ const client = createClient<
     Database,
     {
       public: {
-        views: {
+        Views: {
           community_post_list_view: {
             Row: SetNonNullable<
               Database["public"]["Views"]["community_post_list_view"]["Row"]

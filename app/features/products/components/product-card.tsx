@@ -7,17 +7,19 @@ import {
   CardTitle,
 } from "~/common/components/ui/card";
 import { Button } from "~/common/components/ui/button";
-import { EyeIcon, HeartIcon, MessageCircleIcon } from "lucide-react";
+import { DotIcon, EyeIcon, HeartIcon, MessageCircleIcon } from "lucide-react";
 import { cn } from "~/lib/utils";
+import { DateTime } from "luxon";
 
 export interface ProductCardProps {
-  productId: string;
+  productId: string | number;
   name: string;
   description: string;
   commentCount?: number;
+  createdAt?: string;
   viewCount?: number;
   likeCount?: number;
-  isLiked: boolean;
+  isLiked?: boolean;
 }
 
 export function ProductCard({
@@ -25,9 +27,10 @@ export function ProductCard({
   name,
   description,
   commentCount,
+  createdAt,
   viewCount,
   likeCount,
-  isLiked,
+  isLiked = false,
 }: ProductCardProps) {
   return (
     <Card className="bg-transparent hover:bg-primary/10">
@@ -52,6 +55,10 @@ export function ProductCard({
                 <EyeIcon className="size-4" />
                 <span className="text-sm font-medium text-muted-foreground">
                   {viewCount}
+                </span>
+                <DotIcon className="size-4" />
+                <span className="text-sm font-medium text-muted-foreground">
+                  {DateTime.fromISO(createdAt ?? "").toRelative()}
                 </span>
               </div>
             </div>

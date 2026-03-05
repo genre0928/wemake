@@ -32,6 +32,7 @@ export default function ProductLeaderboard({
       description: "한 해동안 가장 인기 있는 제품을 확인해보세요.",
     },
   };
+  const periodProducts = products
 
   return (
     <div className="grid grid-cols-3 gap-4">
@@ -48,13 +49,14 @@ export default function ProductLeaderboard({
         return (
           <ProductCard
             key={product.product_id ?? 0}
-            productId={String(product.product_id ?? "")}
+            productId={product.product_id ?? ""}
             name={product.name ?? ""}
             description={product.description ?? ""}
             viewCount={stats?.views ?? 0}
             commentCount={stats?.reviews ?? 0}
             likeCount={product.upvotes ?? 0}
             isLiked={false}
+            createdAt={product.created_at ?? ""}
           />
         );
       })}
