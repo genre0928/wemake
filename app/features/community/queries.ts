@@ -7,6 +7,7 @@ import { postLikes, posts, topics } from "./schema";
 import { count, eq } from "drizzle-orm";
 import { profiles } from "../users/schema";
 import client from "~/supa-client";
+import { DateTime } from "luxon";
 
 // 토픽 가져오기 drizzle ORM 작성 방법
 // export const getTopics = async () => {
@@ -78,11 +79,55 @@ export const getTopics = async () => {
 // 게시물 Data 가져오기 SQL Views 작성 방법
 // view를 통해 데이터를 조회하는 경우 return data의 타입이 nullable이기 때문에 type 에러가 발생하여 이를 처리해야함
 // !을 통해 강제로 null을 제거하거나 type-fest 라이브러리를 통해 타입을 오버라이드하여 null 제거
-export const getPosts = async () => {
-    // await new Promise((resolve) => setTimeout(resolve, 4000));
-  const { data, error } = await client
+export const getPosts = async ({
+  limit = 7,
+  sort,
+  period = "all",
+  keyword,
+  category,
+}: {
+  limit?: number;
+  sort: "newest" | "popular";
+  period?: "daily" | "weekly" | "monthly" | "yearly" | "all";
+  keyword?: string;
+  category?: string;
+}) => {
+  // baseQuery 생성
+  const baseQuery = client
     .from("community_post_list_view")
-    .select("*");
+    .select("*")
+    .limit(limit);
+  // baseQuery 요청 전 조건 설정 섹션
+  if (sort === "newest") {
+    baseQuery.order("created_at", { ascending: false });
+  } else if (sort === "popular") {
+    if (period === "all") {
+      baseQuery.order("upvotes", { ascending: false });
+    } else {
+      const today = DateTime.now();
+      if (period === "daily") {
+        baseQuery.gte("created_at", today.startOf("day").toISO());
+      } else if (period === "weekly") {
+        baseQuery.gte("created_at", today.startOf("week").toISO());
+      } else if (period === "monthly") {
+        baseQuery.gte("created_at", today.startOf("month").toISO());
+      } else if (period === "yearly") {
+        baseQuery.gte("created_at", today.startOf("year").toISO());
+      }
+      baseQuery.order("upvotes", { ascending: false });
+    }
+  }
+
+  if (keyword) {
+    baseQuery.ilike("title", `%${keyword}%`);
+  }
+
+  if (category) {
+    baseQuery.eq("topic", category)
+  }
+  // 조건 검증 후 조건이 부여된 baseQuery를 실행하여 data를 가져옴
+  const { data, error } = await baseQuery;
+
   if (error) {
     throw new Error(error.message);
   }

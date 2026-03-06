@@ -19,24 +19,39 @@ import { getPosts, getTopics } from "../queries";
 import { posts, topics } from "../schema";
 import type { Route } from "./+types/community-page";
 import { Suspense } from "react";
+import z from "zod";
 
-export const loader = async () => {
-  // const topics = await getTopics();
-  // const posts = await getPosts();
-  const [topics, posts] = await Promise.all([getTopics(), getPosts()]);
+const searchParamsSchema = z.object({
+  sort: z.enum(["newest", "popular"]).optional().default("newest"),
+  period: z
+    .enum(["daily", "weekly", "monthly", "yearly", "all"])
+    .optional()
+    .default("all"),
+  keyword: z.string().optional(),
+  category : z.string().optional(),
+});
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const url = new URL(request.url);
+  const { success, data } = searchParamsSchema.safeParse(
+    Object.fromEntries(url.searchParams),
+  );
+  if (!success) {
+    throw new Error("Invalid parameters");
+  }
+  const { sort, period, keyword, category } = data;
+  const [topics, posts] = await Promise.all([
+    getTopics(),
+    getPosts({ limit: 7, sort, period, keyword, category }),
+  ]);
   return { topics, posts };
 };
 
 export default function CommunityPage({ loaderData }: Route.ComponentProps) {
-  // const { topics, posts } = loaderData;
   const [searchParams, setSearchParams] = useSearchParams();
-  const sort = searchParams.get("sort") || "newest";
-  const period = searchParams.get("period") || "daily";
+  const sortedValue = searchParams.get("sort") || "newest";
+  const periodValue = searchParams.get("period") || "daily";
   const category = searchParams.get("category") || "";
-  const onSortChange = (value: string) => {
-    searchParams.set("sort", value);
-    setSearchParams(searchParams);
-  };
   return (
     <div className="space-y-10">
       <Hero title="커뮤니티" description="커뮤니티 페이지" />
@@ -50,7 +65,8 @@ export default function CommunityPage({ loaderData }: Route.ComponentProps) {
                 <span className="text-sm capitalize">
                   {
                     SORT_OPTIONS.find(
-                      (option: { value: string }) => option.value === sort,
+                      (option: { value: string }) =>
+                        option.value === sortedValue,
                     )?.label
                   }
                 </span>
@@ -60,7 +76,7 @@ export default function CommunityPage({ loaderData }: Route.ComponentProps) {
                 {SORT_OPTIONS.map(
                   (option: { label: string; value: string }) => (
                     <DropdownMenuCheckboxItem
-                      className="capitalize cursor-pointer"
+                      className="cursor-pointer"
                       key={option.value}
                       onCheckedChange={(checked: boolean) => {
                         if (checked) {
@@ -75,13 +91,14 @@ export default function CommunityPage({ loaderData }: Route.ComponentProps) {
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
-            {sort === "popular" && (
+            {sortedValue === "popular" && (
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-1">
                   <span className="text-sm capitalize">
                     {
                       PERIOD_OPTIONS.find(
-                        (option: { value: string }) => option.value === period,
+                        (option: { value: string }) =>
+                          option.value === periodValue,
                       )?.label
                     }
                   </span>
@@ -91,7 +108,7 @@ export default function CommunityPage({ loaderData }: Route.ComponentProps) {
                   {PERIOD_OPTIONS.map(
                     (option: { label: string; value: string }) => (
                       <DropdownMenuCheckboxItem
-                        className="capitalize cursor-pointer"
+                        className="cursor-pointer"
                         key={option.value}
                         onCheckedChange={(checked: boolean) => {
                           if (checked) {
@@ -116,7 +133,7 @@ export default function CommunityPage({ loaderData }: Route.ComponentProps) {
                 <Form className="w-2/3">
                   <Input
                     type="text"
-                    name="search"
+                    name="keyword"
                     placeholder="검색을 통해 게시물을 찾아보세요"
                   />
                 </Form>

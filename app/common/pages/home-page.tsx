@@ -18,6 +18,7 @@ import { SquareArrowOutUpRight } from "lucide-react";
 import { IconCloud } from "../components/ui/icon-cloud";
 import { getProductsByDateRange } from "~/features/products/queries";
 import { DateTime } from "luxon";
+import { getPosts } from "~/features/community/queries";
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -32,11 +33,15 @@ export const loader = async () => {
     endDate: DateTime.now().endOf("day"),
     limit: 7,
   });
-  return { products };
+
+  const posts = await getPosts({
+    limit: 7,
+    sort: "newest",
+  });
+  return { products, posts };
 };
 
 export default function HomePage({ loaderData }: Route.ComponentProps) {
-  console.log(loaderData);
   return (
     <div className="space-y-30">
       {/* 오늘의 제품 */}
@@ -60,21 +65,23 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
           );
         })}
       </div>
-      {/* 토론 */}
+      {/* 커뮤니티 게시글 */}
       <div className="grid grid-cols-3 gap-4">
         <SectionHeader
-          title="오늘의 토론"
-          description="커뮤니티에서 가장 인기 있는 토론을 확인해보세요."
+          title="오늘의 커뮤니티 토론"
+          description="현재 가장 인기 있는 커뮤니티 게시글을 확인해보세요."
           linkTo="/community"
         />
-        <PostCard
-          postId={1}
-          title="토론 제목"
-          author="작성자"
-          category="카테고리"
-          timeAgo={DateTime.now().minus({ hours: 12 }).toJSDate()}
-          upvotes={10}
-        />
+        {loaderData.posts.map((post) => (
+          <PostCard
+            postId={post.post_id!}
+            title={post.title!}
+            author={post.nickname!}
+            category={post.topic!}
+            timeAgo={new Date(post.created_at!)}
+            upvotes={post.upvotes!}
+          />
+        ))}
       </div>
       {/* 아이디어 */}
       <div className="grid grid-cols-3 gap-4">

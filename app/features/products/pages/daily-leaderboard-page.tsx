@@ -6,14 +6,18 @@ import { ProductCard } from "../components/product-card";
 import { Button } from "~/common/components/ui/button";
 import { Link } from "react-router";
 import ProductPagination from "~/common/components/product-pagination";
+import { getProductsByDateRange } from "../queries";
 
-export const meta: Route.MetaFunction = ({params}) => {
+export const meta: Route.MetaFunction = ({ params }) => {
   const { year, month, day } = params;
   return [
-    {title : `${year}년 ${month}월 ${day}일 리더보드 | Wemake`},
-    {name : "description", content : `${year}년 ${month}월 ${day}일 리더보드 페이지`},
-  ]
-}
+    { title: `${year}년 ${month}월 ${day}일 리더보드 | Wemake` },
+    {
+      name: "description",
+      content: `${year}년 ${month}월 ${day}일 리더보드 페이지`,
+    },
+  ];
+};
 
 const paramsSchema = z.object({
   year: z.coerce.number(),
@@ -36,14 +40,20 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
       status: 400,
     });
   }
+
+  const products = await getProductsByDateRange({
+    startDate: date.startOf("day"),
+    endDate: date.endOf("day"),
+    limit: 7,
+  });
   // JSON 직렬화를 위해 plain object로 반환 (DateTime은 클라이언트에서 문자열로 변환됨)
-  return { ...data };
+  return { ...data, products };
 };
 
 export default function DailyLeaderboardPage({
   loaderData,
 }: Route.ComponentProps) {
-  const { year, month, day } = loaderData;
+  const { year, month, day, products } = loaderData;
   const urlDate = DateTime.fromObject({ year, month, day }).setZone(
     "Asia/Seoul",
   );
@@ -87,18 +97,22 @@ export default function DailyLeaderboardPage({
         )}
       </div>
       <div className="space-y-4 w-full max-w-3xl mx-auto mb-10">
-        {Array.from({ length: 7 }).map((_, index) => (
-          <ProductCard
-            key={index}
-            productId="productId"
-            name="제품명"
-            description="제품 설명"
-            commentCount={10}
-            viewCount={10}
-            likeCount={10}
-            isLiked={false}
-          />
-        ))}
+        {products.map((product) => {
+          const stats = product.stats as { reviews: number; views: number };
+          return (
+            <ProductCard
+              key={product.product_id ?? 0}
+              productId={product.product_id ?? ""}
+              name={product.name ?? ""}
+              description={product.description ?? ""}
+              commentCount={stats?.reviews ?? 0}
+              viewCount={stats?.views ?? 0}
+              likeCount={product.upvotes ?? 0}
+              isLiked={false}
+              createdAt={product.created_at ?? ""}
+            />
+          );
+        })}
       </div>
       <div>
         <ProductPagination totalPages={10} />

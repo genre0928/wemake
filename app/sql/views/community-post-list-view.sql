@@ -1,4 +1,4 @@
-CREATE VIEW community_post_list_view AS
+CREATE or REPLACE VIEW community_post_list_view AS
 SELECT
     posts.post_id,
     posts.title,
@@ -7,7 +7,7 @@ SELECT
     profiles.name as author,
     profiles.nickname as nickname,
     profiles.avatar as avatar,
-    COUNT(post_likes.post_id) as likes
+    posts.upvotes
 FROM posts
 INNER JOIN topics USING (topic_id)
 INNER JOIN profiles USING (profile_id)
