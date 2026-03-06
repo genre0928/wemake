@@ -18,6 +18,11 @@ const client = createClient<
               Database["public"]["Views"]["product_list_view"]["Row"]
             >;
           };
+          idea_list_view: {
+            Row: SetNonNullable<
+              Database["public"]["Views"]["idea_list_view"]["Row"]
+            >;
+          };
         };
       };
     }

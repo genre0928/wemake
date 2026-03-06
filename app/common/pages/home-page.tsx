@@ -19,6 +19,7 @@ import { IconCloud } from "../components/ui/icon-cloud";
 import { getProductsByDateRange } from "~/features/products/queries";
 import { DateTime } from "luxon";
 import { getPosts } from "~/features/community/queries";
+import { getIdeas } from "~/features/ideas/queries";
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -38,7 +39,10 @@ export const loader = async () => {
     limit: 7,
     sort: "newest",
   });
-  return { products, posts };
+
+  const ideas = await getIdeas({});
+
+  return { products, posts, ideas };
 };
 
 export default function HomePage({ loaderData }: Route.ComponentProps) {
@@ -90,14 +94,17 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
           description="내가 찾는 아이디어를 먼저 선점해보세요"
           linkTo="/ideas"
         />
-        <IdeaCard
-          ideaId="ideaId"
-          title="아이디어 제목 이렇게 이렇게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길게 길고 길고 길 asd"
-          viewCount={10}
-          timeAgo="12시간 전"
-          likeCount={10}
-          isClaimed={false}
-        />
+        {loaderData.ideas.map((idea) => (
+          <IdeaCard
+            key={idea.idea_id}
+            ideaId={idea.idea_id}
+            title={idea.title}
+            viewCount={idea.views}
+            timeAgo={idea.created_at}
+            likeCount={idea.upvotes}
+            isClaimed={idea.is_claimed}
+          />
+        ))}
       </div>
       {/* 직업 */}
       <div className="grid grid-cols-4 gap-4">

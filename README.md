@@ -192,3 +192,11 @@ render - 요소가 렌더링 될 때
 2. 메인페이지 오늘의 토론 섹션 포스트카드 플리커 현상 해결하기
 
 3. 답글 css 구조 고민해보기(전체 width를 2/3로 제한하니까 댓글이 길어질수록 크기가 줄어듦)
+
+sql view 생성 순서
+1. 폴더에 sql 파일 생성 및 sql문 작성
+2. supabase sql 에디터 실행
+3. 생성한 view의 타입을 가져오기 위해 npm run db:typegen 실행
+
+** view 생성 시 nullable 타입 선정으로 오류 발생
+supa-client.ts에서 null 미허용으로 타입 덮어씌우기 하면 해결
