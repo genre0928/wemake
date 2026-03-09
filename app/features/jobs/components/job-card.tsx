@@ -8,9 +8,10 @@ import {
   CardTitle,
 } from "~/common/components/ui/card";
 import { Badge } from "~/common/components/ui/badge";
+import { DateTime } from "luxon";
 
 export interface JobCardProps {
-  jobId: string;
+  jobId: number;
   companyName: string;
   companyLogoUrl?: string;
   timeAgo: string;
@@ -43,7 +44,7 @@ export function JobCard({
             />
             <div className="space-x-2">
               <span className="text-accent-foreground">{companyName}</span>
-              <span className="text-xs text-muted-foreground">{timeAgo}</span>
+              <span className="text-xs text-muted-foreground">{DateTime.fromISO(timeAgo).toRelative()}</span>
             </div>
           </div>
           <CardTitle className="text-2xl font-semibold leading-none tracking-tight">

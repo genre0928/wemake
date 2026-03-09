@@ -15,13 +15,12 @@ import {
 import { SquareArrowOutUpRight } from "lucide-react";
 
 export interface TeamCardProps {
-  teamId: string;
+  teamId: number;
   title: string;
   description: string;
   tags: string[];
   authorNickname: string;
-  authorAvatarUrl?: string;
-  authorAvatarFallback?: string;
+  authorAvatarUrl: string | null;
 }
 
 export function TeamCard({
@@ -30,8 +29,7 @@ export function TeamCard({
   description,
   tags,
   authorNickname,
-  authorAvatarUrl = "https://github.com/shadcn.png",
-  authorAvatarFallback = "N",
+  authorAvatarUrl = null,
 }: TeamCardProps) {
   return (
     <Card className="bg-transparent hover:bg-primary/10">
@@ -46,31 +44,38 @@ export function TeamCard({
           <SquareArrowOutUpRight className="size-6" />
         </Link>
       </CardHeader>
-      <CardContent className="space-y-2">
-        <p className="text-sm line-clamp-2">{description}</p>
-        <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
+      <div className="flex flex-col justify-between flex-1">
+        <CardContent className="space-y-2">
+          <p className="text-lg line-clamp-2">{description}</p>
+          <div className="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <Badge
+                key={tag}
+                variant="default"
+                className="flex items-center gap-2 text-base"
+              >
+                <span>{tag}</span>
+              </Badge>
+            ))}
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-end">
+          <div>
             <Badge
-              key={tag}
               variant="ghost"
               className="flex items-center gap-2 text-base"
             >
-              <span>{tag}</span>
+              <Avatar className="size-6">
+                <AvatarFallback>N</AvatarFallback>
+                {authorAvatarUrl ? <AvatarImage src={authorAvatarUrl} /> : null}
+              </Avatar>
+              <span className="text-sm text-muted-foreground">
+                @{authorNickname}
+              </span>
             </Badge>
-          ))}
-        </div>
-      </CardContent>
-      <CardFooter className="flex justify-end">
-        <div>
-          <Badge variant="ghost" className="flex items-center gap-2 text-base">
-            <Avatar className="size-6">
-              <AvatarImage src={authorAvatarUrl} />
-              <AvatarFallback>{authorAvatarFallback}</AvatarFallback>
-            </Avatar>
-            <span className="text-sm text-muted-foreground">@{authorNickname}</span>
-          </Badge>
-        </div>
-      </CardFooter>
+          </div>
+        </CardFooter>
+      </div>
     </Card>
   );
 }

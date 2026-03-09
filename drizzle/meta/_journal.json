@@ -71,6 +71,20 @@
       "when": 1772610341229,
       "tag": "0009_fixed_karen_page",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1773027378622,
+      "tag": "0010_marvelous_dexter_bennett",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1773027472983,
+      "tag": "0011_youthful_johnny_blaze",
+      "breakpoints": true
     }
   ]
 }

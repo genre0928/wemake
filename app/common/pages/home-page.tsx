@@ -20,6 +20,10 @@ import { getProductsByDateRange } from "~/features/products/queries";
 import { DateTime } from "luxon";
 import { getPosts } from "~/features/community/queries";
 import { getIdeas } from "~/features/ideas/queries";
+import { getJobs } from "~/features/jobs/queries";
+import client from "~/supa-client";
+import { getTeams } from "~/features/teams/queries";
+import { TeamCard } from "~/features/teams/components/team-card";
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -41,8 +45,10 @@ export const loader = async () => {
   });
 
   const ideas = await getIdeas({});
+  const jobs = await getJobs(client, { limit: 11 });
+  const teams = await getTeams({ limit: 7 });
 
-  return { products, posts, ideas };
+  return { products, posts, ideas, jobs, teams };
 };
 
 export default function HomePage({ loaderData }: Route.ComponentProps) {
@@ -113,67 +119,39 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
           description="현재 채용중인 공고를 확인해보세요"
           linkTo="/jobs"
         />
-        <JobCard
-          jobId="jobId"
-          companyName="테슬라"
-          timeAgo="12시간 전"
-          title="프론트엔드 개발자"
-          tags={["프론트엔드", "개발", "테슬라"]}
-          salary={[3500, 4000]}
-          location="경상북도 구미시"
-        />
+        {loaderData.jobs.map((job) => (
+          <JobCard
+            jobId={job.job_id}
+            companyName={job.company_name}
+            timeAgo={job.created_at}
+            title={job.position}
+            tags={job.skills.split(",")}
+            salary={[
+              Number(job.salary.split("-")[0]),
+              Number(job.salary.split("-")[1]),
+            ]}
+            location={job.company_location}
+          />
+        ))}
       </div>
-      {/* 팀 섹션 */}
+      {/* 팀 */}
       <div className="grid grid-cols-3 gap-4">
         <SectionHeader
           title="팀원 모집"
           description="현재 팀원을 모집중인 팀을 확인해보세요"
           linkTo="/teams"
         />
-        <Link to="/teams/teamId">
-          <Card className="bg-transparent hover:bg-primary/10 transition-colors duration-200 ease-in-out">
-            <CardHeader className="flex items-center">
-              <CardTitle className="line-clamp-1 text-xl flex items-center justify-between w-full">
-                <span>모바일게임 BM 기능 구현</span>
-                <SquareArrowOutUpRight className="size-4 shrink-0" />
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <p className="text-sm line-clamp-2">
-                BM 구현을 위한 기술을 가진 팀원을 구합니다 자격이 있으신 분들은
-                지원해주세요
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Badge
-                  variant="ghost"
-                  className="flex items-center gap-2 text-base"
-                >
-                  <span>프론트엔드</span>
-                </Badge>
-                <Badge
-                  variant="ghost"
-                  className="flex items-center gap-2 text-base"
-                >
-                  <span>백엔드</span>
-                </Badge>
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-end">
-              <div>
-                <Badge
-                  variant="ghost"
-                  className="flex items-center gap-2 text-base"
-                >
-                  <span>@nickname</span>
-                  <Avatar className="size-4">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>N</AvatarFallback>
-                  </Avatar>
-                </Badge>
-              </div>
-            </CardFooter>
-          </Card>
-        </Link>
+        {loaderData.teams.map((team) => (
+          <TeamCard
+            key={team.team_id}
+            teamId={team.team_id}
+            title={team.name}
+            description={team.description}
+            tags={team.position.split(",")}
+            authorNickname={team.team_leader.name}
+            authorAvatarUrl={team.team_leader.avatar}
+          />
+        ))}
       </div>
     </div>
   );
