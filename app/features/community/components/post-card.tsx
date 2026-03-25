@@ -20,7 +20,7 @@ export interface PostCardProps {
   title: string;
   author: string;
   category: string;
-  timeAgo: Date;
+  timeAgo: DateTime;
   avatarSrc?: string;
   avatarFallback?: string;
   expanded?: boolean;
@@ -64,7 +64,7 @@ export function PostCard({
               <span>{author}</span>
               <span>{category}</span>
               <DotIcon className="size-4" />
-              <span>{DateTime.fromJSDate(timeAgo).toRelative()}</span>
+              <span>{timeAgo.toRelative()}</span>
             </div>
           </div>
         </CardHeader>

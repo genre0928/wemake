@@ -15,22 +15,20 @@ export interface ProductCardProps {
   productId: string | number;
   name: string;
   description: string;
-  commentCount?: number;
-  createdAt?: string;
-  viewCount?: number;
-  likeCount?: number;
-  isLiked?: boolean;
+  reviews: string;
+  views: string;
+  upvotes: string;
+  createdAt: string;
 }
 
 export function ProductCard({
   productId,
   name,
   description,
-  commentCount,
+  reviews,
+  views,
+  upvotes,
   createdAt,
-  viewCount,
-  likeCount,
-  isLiked = false,
 }: ProductCardProps) {
   return (
     <Card className="bg-transparent hover:bg-primary/10">
@@ -48,13 +46,13 @@ export function ProductCard({
               <div className="flex items-center gap-1">
                 <MessageCircleIcon className="size-4" />
                 <span className="text-sm font-medium text-muted-foreground">
-                  {commentCount}
+                  {reviews}
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <EyeIcon className="size-4" />
                 <span className="text-sm font-medium text-muted-foreground">
-                  {viewCount}
+                  {views}
                 </span>
                 <DotIcon className="size-4" />
                 <span className="text-sm font-medium text-muted-foreground">
@@ -70,10 +68,8 @@ export function ProductCard({
             variant="outline"
             className="flex flex-col size-16 cursor-pointer"
           >
-            <HeartIcon
-              className={cn("size-4", isLiked && "fill-primary text-primary")}
-            />
-            <span>{likeCount}</span>
+            <HeartIcon className={cn("size-4")} />
+            <span>{upvotes}</span>
           </Button>
         </CardFooter>
       </div>

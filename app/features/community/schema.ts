@@ -25,10 +25,10 @@ export const posts = pgTable("posts", {
   updated_at: timestamp().notNull().defaultNow(),
   topic_id: bigint({ mode: "number" }).references(() => topics.topic_id, {
     onDelete: "cascade",
-  }),
+  }).notNull(),
   profile_id: uuid().references(() => profiles.profile_id, {
     onDelete: "cascade",
-  }),
+  }).notNull(),
 });
 
 export const postLikes = pgTable(

@@ -2,9 +2,11 @@ import { Hero } from "~/common/components/hero";
 import { TeamCard } from "../components/team-card";
 import { getTeams } from "../queries";
 import type { Route } from "./+types/teams-page";
+import { makeSSRClient } from "~/supa-client";
 
-export const loader = async () => {
-  const teams = await getTeams({ limit: 10 });
+export const loader = async ({request} : Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const teams = await getTeams(client, { limit: 10 });
   return { teams };
 };
 

@@ -2,9 +2,11 @@ import { Hero } from "~/common/components/hero";
 import { IdeaCard } from "../components/idea-card";
 import { getIdeas } from "../queries";
 import type { Route } from "./+types/ideas-page";
+import { makeSSRClient } from "~/supa-client";
 
-export const loader = async () => {
-  const ideas = await getIdeas({});
+export const loader = async ({request} : Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const ideas = await getIdeas(client, { limit: 10 });
   return { ideas };
 }
 

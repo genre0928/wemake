@@ -6,6 +6,7 @@ import { DotIcon, EyeIcon, HeartIcon } from "lucide-react";
 import { Button } from "~/common/components/ui/button";
 import { getIdea, getIdeas } from "../queries";
 import { DateTime } from "luxon";
+import { makeSSRClient } from "~/supa-client";
 
 export const meta = ({ loaderData }: Route.ComponentProps) => {
   return [
@@ -14,8 +15,9 @@ export const meta = ({ loaderData }: Route.ComponentProps) => {
   ];
 };
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
-  const idea = await getIdea(Number(params.ideaId));
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const idea = await getIdea(client, Number(params.ideaId));
   return { idea };
 };
 export default function IdeaPage({ loaderData }: Route.ComponentProps) {

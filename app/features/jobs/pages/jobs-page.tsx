@@ -6,7 +6,7 @@ import { useSearchParams } from "react-router";
 import { getJobs } from "../queries";
 import type { Route } from "./+types/jobs-page";
 import z from "zod";
-import client from "~/supa-client";
+import { makeSSRClient } from "~/supa-client";
 
 const searchParamsSchema = z.object({
   type: z.enum(JOB_TYPES.map((type) => type.value)).optional(),
@@ -20,6 +20,7 @@ export const loader = async ({request} : Route.LoaderArgs) => {
   if (!success) {
     throw new Error("Invalid parameters");
   }
+  const { client } = makeSSRClient(request);
   const jobs = await getJobs(client, {
     type: data?.type,
     work: data?.work,

@@ -6,7 +6,9 @@ import { ProductCard } from "../components/product-card";
 import { Button } from "~/common/components/ui/button";
 import { Link } from "react-router";
 import ProductPagination from "~/common/components/product-pagination";
-
+import { getProductPagesByDateRange, getProductsByDateRange } from "../queries";
+import { makeSSRClient } from "~/supa-client";
+    
 export const meta: Route.MetaFunction = ({params}) => {
   const { year, month } = params;
   return [
@@ -20,7 +22,8 @@ const paramsSchema = z.object({
   month: z.coerce.number(),
 });
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
   const { success, data } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Error("Invalid parameters");
@@ -38,13 +41,26 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
       status: 400,
     });
   }
-  return { year: data.year, month: data.month };
+
+  const url = new URL(request.url);
+  const products = await getProductsByDateRange(client,{
+    startDate: date.startOf("month"),
+    endDate: date.endOf("month"),
+    limit: 15,
+    page: Number(url.searchParams.get("page") ?? "1"),
+  });
+
+  const totalPages = await getProductPagesByDateRange(client,{
+    startDate: date.startOf("month"),
+    endDate: date.endOf("month"),
+  });
+  return { year: data.year, month: data.month, products, totalPages };
 };
 
 export default function MonthlyLeaderboardPage({
   loaderData,
 }: Route.ComponentProps) {
-  const { year, month } = loaderData;
+  const { year, month, products, totalPages } = loaderData;
   const urlDate = DateTime.fromObject({ year, month }).setZone("Asia/Seoul");
   const now = DateTime.now().setZone("Asia/Seoul");
   const isCurrentMonth =
@@ -86,21 +102,21 @@ export default function MonthlyLeaderboardPage({
         )}
       </div>
       <div className="space-y-4 w-full max-w-3xl mx-auto mb-10">
-        {Array.from({ length: 7 }).map((_, index) => (
+      {products.map((product) => (
           <ProductCard
-            key={index}
-            productId="productId"
-            name="제품명"
-            description="제품 설명"
-            commentCount={10}
-            viewCount={10}
-            likeCount={10}
-            isLiked={false}
+            key={product.product_id}
+            productId={product.product_id}
+            name={product.name}
+            description={product.description}
+            reviews={product.reviews}
+            views={product.views}
+            upvotes={product.upvotes}
+            createdAt={product.created_at}
           />
         ))}
       </div>
       <div>
-        <ProductPagination totalPages={10} />
+        <ProductPagination totalPages={totalPages} />
       </div>
     </div>
   );

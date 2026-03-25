@@ -1,6 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "database.types";
-import client from "~/supa-client";
+import type { Database } from "~/supa-client";
 import { JOB_SALARY_TYPES, JOB_TYPES, WORK_TYPES } from "./constants";
 
 type jobType = (typeof JOB_TYPES)[number]["value"];
@@ -34,6 +33,21 @@ export const getJobs = async (
     baseQuery.eq("salary", salary);
   }
   const { data, error } = await baseQuery;
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+};
+
+export const getJobById = async (
+  client: SupabaseClient<Database>,
+  jobId: number,
+) => {
+  const { data, error } = await client
+    .from("jobs")
+    .select("*")
+    .eq("job_id", jobId)
+    .single();
   if (error) {
     throw new Error(error.message);
   }

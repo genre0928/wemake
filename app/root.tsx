@@ -13,6 +13,8 @@ import "./app.css";
 import Navigation from "./common/components/navigation";
 import type React from "react";
 import { cn } from "./lib/utils";
+import { makeSSRClient } from "./supa-client";
+import { getUserById } from "./features/users/queries";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -45,25 +47,51 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App() {
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const {
+    data: { user },
+  } = await client.auth.getUser();
+
+  if (!user?.id) {
+    return { user: null, profile: null };
+  }
+
+  const dbProfile = await getUserById(client, { id: user.id });
+  const profile = dbProfile
+    ? {
+        avatar: dbProfile.avatar ?? "",
+        name: dbProfile.name,
+        nickname: dbProfile.nickname,
+        email: dbProfile.email,
+      }
+    : null;
+
+  return { user, profile };
+};
+
+export default function App({ loaderData }: Route.ComponentProps) {
   const location = useLocation();
+  const { user, profile } = loaderData;
+  const isLoggedIn = !!user;
   const isAuth = location.pathname.startsWith("/auth");
   return (
     <div
       className={cn(
         "flex min-h-screen flex-col px-20 py-28",
-        isAuth && "px-0 py-0"
+        isAuth && "px-0 py-0",
       )}
     >
       {!isAuth && (
         <Navigation
-          isLoggedIn={true}
+          isLoggedIn={isLoggedIn}
           hasNotifications={true}
           hasMessages={true}
+          profile={profile}
         />
       )}
       <div className="min-h-0 flex-1">
-        <Outlet />
+        <Outlet context={{ isLoggedIn, userProfile: profile }} />
       </div>
     </div>
   );

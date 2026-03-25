@@ -4,28 +4,34 @@ import z from "zod";
 import { Hero } from "~/common/components/hero";
 import { ProductCard } from "../components/product-card";
 import { Button } from "~/common/components/ui/button";
-import { Link } from "react-router";
+import { data, Link } from "react-router";
 import ProductPagination from "~/common/components/product-pagination";
+import { getProductPagesByDateRange, getProductsByDateRange } from "../queries";
+import { makeSSRClient } from "~/supa-client";
 
-export const meta: Route.MetaFunction = ({params}) => {
+export const meta: Route.MetaFunction = ({ params }) => {
   const { year, week } = params;
   return [
-    {title : `${year}년 ${week}주 리더보드 | Wemake`},
-    {name : "description", content : `${year}년 ${week}주 리더보드 페이지`},
-  ]
-}
+    { title: `${year}년 ${week}주 리더보드 | Wemake` },
+    { name: "description", content: `${year}년 ${week}주 리더보드 페이지` },
+  ];
+};
 
 const paramsSchema = z.object({
   year: z.coerce.number(),
   week: z.coerce.number(),
 });
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
   const { success, data } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Error("Invalid parameters");
   }
-  const date = DateTime.fromObject({ weekYear: data.year, weekNumber: data.week }).setZone("Asia/Seoul");
+  const date = DateTime.fromObject({
+    weekYear: data.year,
+    weekNumber: data.week,
+  }).setZone("Asia/Seoul");
   if (!date.isValid) {
     throw new Response("Invalid week", { status: 400 });
   }
@@ -35,18 +41,32 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
       status: 400,
     });
   }
-  return { year: data.year, week: data.week };
+  const url = new URL(request.url);
+  const products = await getProductsByDateRange(client, {
+    startDate: date.startOf("week"),
+    endDate: date.endOf("week"),
+    limit: 15,
+    page: Number(url.searchParams.get("page") ?? "1"),
+  });
+
+  const totalPages = await getProductPagesByDateRange(client, {
+    startDate: date.startOf("week"),
+    endDate: date.endOf("week"),
+  });
+  return { year: data.year, week: data.week, products, totalPages };
 };
 
 export default function WeeklyLeaderboardPage({
   loaderData,
 }: Route.ComponentProps) {
-  const { year, week } = loaderData;
-  const urlDate = DateTime.fromObject({ weekYear: year, weekNumber: week }).setZone(
-    "Asia/Seoul",
+  const { year, week, products, totalPages } = loaderData;
+  const urlDate = DateTime.fromObject({
+    weekYear: year,
+    weekNumber: week,
+  }).setZone("Asia/Seoul");
+  const isToday = urlDate.equals(
+    DateTime.now().setZone("Asia/Seoul").startOf("week"),
   );
-  const now = DateTime.now().setZone("Asia/Seoul");
-  const isToday = urlDate.weekNumber === now.weekNumber && urlDate.weekYear === now.weekYear;
   const previousWeek = urlDate.minus({ weeks: 1 });
   const nextWeek = urlDate.plus({ weeks: 1 });
   if (!previousWeek.isValid) {
@@ -84,21 +104,21 @@ export default function WeeklyLeaderboardPage({
         )}
       </div>
       <div className="space-y-4 w-full max-w-3xl mx-auto mb-10">
-        {Array.from({ length: 7 }).map((_, index) => (
+        {products.map((product) => (
           <ProductCard
-            key={index}
-            productId="productId"
-            name="제품명"
-            description="제품 설명"
-            commentCount={10}
-            viewCount={10}
-            likeCount={10}
-            isLiked={false}
+            key={product.product_id}
+            productId={product.product_id}
+            name={product.name}
+            description={product.description}
+            reviews={product.reviews}
+            views={product.views}
+            upvotes={product.upvotes}
+            createdAt={product.created_at}
           />
         ))}
       </div>
       <div>
-        <ProductPagination totalPages={10} />
+        <ProductPagination totalPages={totalPages} />
       </div>
     </div>
   );

@@ -1,4 +1,9 @@
-import { EditIcon, MessageCircleIcon, SettingsIcon } from "lucide-react";
+import {
+  EditIcon,
+  MessageCircleIcon,
+  SettingsIcon,
+  UserPlusIcon,
+} from "lucide-react";
 import { Form, Link, NavLink, Outlet } from "react-router";
 import {
   Avatar,
@@ -16,15 +21,24 @@ import {
   DialogTrigger,
 } from "~/common/components/ui/dialog";
 import { Textarea } from "~/common/components/ui/textarea";
+import type { Route } from "./+types/profile-layout";
+import { getUserProfile } from "../queries";
+import { makeSSRClient } from "~/supa-client";
 
-export default function ProfileLayout() {
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const user = await getUserProfile(client, params.nickname);
+  return { user };
+};
+
+export default function ProfileLayout({ loaderData }: Route.ComponentProps) {
   const navigateOptions = [
     {
       label: "소개",
-      url: "/my/users/userId",
+      url: `/users/${loaderData.user.nickname}`,
     },
-    { label: "제품", url: "/my/users/userId/products" },
-    { label: "게시글", url: "/my/users/userId/posts" },
+    { label: "제품", url: `/users/${loaderData.user.nickname}/products` },
+    { label: "게시글", url: `/users/${loaderData.user.nickname}/posts` },
   ];
   return (
     <div className="space-y-15">
@@ -32,19 +46,22 @@ export default function ProfileLayout() {
       <div className="flex gap-10">
         {/* 아바타 이미지 섹션 */}
         <Avatar className="size-40">
-          <AvatarImage src="https://github.com/genre0928.png" />
-          <AvatarFallback>N</AvatarFallback>
+          {loaderData.user.avatar ? (
+            <AvatarImage src={loaderData.user.avatar} />
+          ) : (
+            <AvatarFallback className="text-2xl font-bold">{loaderData.user.name.charAt(0)}</AvatarFallback>
+          )}
         </Avatar>
         {/* 프로필 정보 섹션 */}
         <div className="flex flex-col justify-center gap-3 w-full">
           <div className="flex gap-5">
-            <h1 className="text-2xl font-semibold">userName</h1>
-            <Button variant="outline" className="gap-2" asChild>
-              <Link to="/my/settings">
-                <EditIcon className="size-4" />
-                <span className="text-sm">수정</span>
-              </Link>
+            <h1 className="text-2xl font-semibold">{loaderData.user.name}</h1>
+            {/* 팔로우 버튼 */}
+            <Button variant="outline" className="gap-2">
+              <UserPlusIcon className="size-4" />
+              <span className="text-sm">팔로우</span>
             </Button>
+            {/* DM 보내기 버튼 */}
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="outline" className="gap-2">
@@ -73,10 +90,21 @@ export default function ProfileLayout() {
                 </DialogDescription>
               </DialogContent>
             </Dialog>
+            {/* 수정 버튼 */}
+            <Button variant="outline" className="gap-2" asChild>
+              <Link to="/my/settings">
+                <EditIcon className="size-4" />
+                <span className="text-sm">수정</span>
+              </Link>
+            </Button>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-muted-foreground">@userId</span>
-            <Badge variant="outline">포지션</Badge>
+            <span className="text-muted-foreground">
+              @{loaderData.user.nickname}
+            </span>
+            <Badge variant="secondary">{loaderData.user.position}</Badge>
+            <Badge variant="secondary">0 팔로우</Badge>
+            <Badge variant="secondary">0 팔로잉</Badge>
           </div>
         </div>
       </div>
@@ -96,7 +124,7 @@ export default function ProfileLayout() {
         ))}
       </div>
       <div className="max-w-3xl">
-        <Outlet />
+        <Outlet context={{ user: loaderData.user }}/>
       </div>
     </div>
   );

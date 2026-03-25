@@ -1,32 +1,75 @@
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "../database.types";
+import {
+  createBrowserClient,
+  createServerClient,
+  parseCookieHeader,
+  serializeCookieHeader,
+} from "@supabase/ssr";
+import type { Database as SupabaseDatabase } from "../database.types";
 import type { MergeDeep, SetNonNullable } from "type-fest";
 
-const client = createClient<
-  MergeDeep<
-    Database,
-    {
-      public: {
-        Views: {
-          community_post_list_view: {
-            Row: SetNonNullable<
-              Database["public"]["Views"]["community_post_list_view"]["Row"]
-            >;
-          };
-          product_list_view: {
-            Row: SetNonNullable<
-              Database["public"]["Views"]["product_list_view"]["Row"]
-            >;
-          };
-          idea_list_view: {
-            Row: SetNonNullable<
-              Database["public"]["Views"]["idea_list_view"]["Row"]
-            >;
-          };
+export type Database = MergeDeep<
+  SupabaseDatabase,
+  {
+    public: {
+      Views: {
+        community_post_list_view: {
+          Row: SetNonNullable<
+            SupabaseDatabase["public"]["Views"]["community_post_list_view"]["Row"]
+          >;
+        };
+        idea_list_view: {
+          Row: SetNonNullable<
+            SupabaseDatabase["public"]["Views"]["idea_list_view"]["Row"]
+          >;
+        };
+        product_overview_view: {
+          Row: SetNonNullable<
+            SupabaseDatabase["public"]["Views"]["product_overview_view"]["Row"]
+          >;
+        };
+        community_post_detail_view: {
+          Row: SetNonNullable<
+            SupabaseDatabase["public"]["Views"]["community_post_detail_view"]["Row"]
+          >;
         };
       };
-    }
-  >
->(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!);
+    };
+  }
+>;
 
-export default client;
+// createClient에서 쿠키 정보 수정이 가능한 브라우저 클라이언트를 createBrowserClient로 생성
+export const browserClient = createBrowserClient<Database>(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_KEY!,
+);
+
+export const makeSSRClient = (request: Request) => {
+  const headers = new Headers();
+  const serverSideClient = createServerClient<Database>(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_KEY!,
+    {
+      cookies: {
+        getAll() {
+          const cookies = parseCookieHeader(
+            request.headers.get("Cookie") ?? "",
+          );
+
+          return cookies.map(({ name, value }) => ({
+            name,
+            value: value ?? "",
+          }));
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            headers.append(
+              "Set-Cookie",
+              serializeCookieHeader(name, value, options),
+            );
+          });
+        },
+      },
+    },
+  );
+  return { client: serverSideClient, headers };
+};

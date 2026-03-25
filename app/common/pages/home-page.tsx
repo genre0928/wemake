@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { data, Link } from "react-router";
 import { SectionHeader } from "../components/section-header";
 import type { Route } from "./+types/home-page";
 import { ProductCard } from "~/features/products/components/product-card";
@@ -21,7 +21,7 @@ import { DateTime } from "luxon";
 import { getPosts } from "~/features/community/queries";
 import { getIdeas } from "~/features/ideas/queries";
 import { getJobs } from "~/features/jobs/queries";
-import client from "~/supa-client";
+import { makeSSRClient } from "~/supa-client";
 import { getTeams } from "~/features/teams/queries";
 import { TeamCard } from "~/features/teams/components/team-card";
 
@@ -32,23 +32,30 @@ export const meta: Route.MetaFunction = () => {
   ];
 };
 
-export const loader = async () => {
-  const products = await getProductsByDateRange({
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client, headers } = makeSSRClient(request);
+  const products = await getProductsByDateRange(client, {
     startDate: DateTime.now().startOf("day"),
     endDate: DateTime.now().endOf("day"),
     limit: 7,
   });
 
-  const posts = await getPosts({
+  const posts = await getPosts(client, {
     limit: 7,
     sort: "newest",
   });
 
-  const ideas = await getIdeas({});
+  const ideas = await getIdeas(client, { limit: 7 });
   const jobs = await getJobs(client, { limit: 11 });
-  const teams = await getTeams({ limit: 7 });
+  const teams = await getTeams(client, { limit: 7 });
 
-  return { products, posts, ideas, jobs, teams };
+  return {
+    products,
+    posts,
+    ideas,
+    jobs,
+    teams,
+  };
 };
 
 export default function HomePage({ loaderData }: Route.ComponentProps) {
@@ -61,19 +68,17 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
           description="오늘 커뮤니티에서 가장 인기 있는 제품을 확인해보세요"
           linkTo="/products/leaderboards"
         />
-        {loaderData.products.map((product) => {
-          const stats = product.stats as { reviews: number; views: number };
-          return (
-            <ProductCard
-              productId={product.product_id}
-              name={product.name}
-              description={product.description}
-              commentCount={stats?.reviews}
-              viewCount={stats?.views}
-              likeCount={product.upvotes}
-            />
-          );
-        })}
+        {loaderData.products.map((product) => (
+          <ProductCard
+            productId={product.product_id}
+            name={product.name}
+            description={product.description}
+            reviews={product.reviews}
+            views={product.views}
+            upvotes={product.upvotes}
+            createdAt={product.created_at}
+          />
+        ))}
       </div>
       {/* 커뮤니티 게시글 */}
       <div className="grid grid-cols-3 gap-4">
@@ -88,7 +93,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             title={post.title!}
             author={post.nickname!}
             category={post.topic!}
-            timeAgo={new Date(post.created_at!)}
+            timeAgo={DateTime.fromISO(post.created_at!)}
             upvotes={post.upvotes!}
           />
         ))}

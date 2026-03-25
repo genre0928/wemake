@@ -38,6 +38,27 @@ export type Database = {
         }
         Relationships: []
       }
+      events: {
+        Row: {
+          created_at: string | null
+          event_data: Json | null
+          event_id: string
+          event_type: Database["public"]["Enums"]["event_types"] | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_data?: Json | null
+          event_id?: string
+          event_type?: Database["public"]["Enums"]["event_types"] | null
+        }
+        Update: {
+          created_at?: string | null
+          event_data?: Json | null
+          event_id?: string
+          event_type?: Database["public"]["Enums"]["event_types"] | null
+        }
+        Relationships: []
+      }
       follows: {
         Row: {
           created_at: string
@@ -314,6 +335,13 @@ export type Database = {
             foreignKeyName: "notifications_post_id_posts_post_id_fk"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "community_post_detail_view"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "notifications_post_id_posts_post_id_fk"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "community_post_list_view"
             referencedColumns: ["post_id"]
           },
@@ -328,7 +356,7 @@ export type Database = {
             foreignKeyName: "notifications_product_id_products_product_id_fk"
             columns: ["product_id"]
             isOneToOne: false
-            referencedRelation: "product_list_view"
+            referencedRelation: "product_overview_view"
             referencedColumns: ["product_id"]
           },
           {
@@ -372,6 +400,13 @@ export type Database = {
             foreignKeyName: "post_likes_post_id_posts_post_id_fk"
             columns: ["post_id"]
             isOneToOne: false
+            referencedRelation: "community_post_detail_view"
+            referencedColumns: ["post_id"]
+          },
+          {
+            foreignKeyName: "post_likes_post_id_posts_post_id_fk"
+            columns: ["post_id"]
+            isOneToOne: false
             referencedRelation: "community_post_list_view"
             referencedColumns: ["post_id"]
           },
@@ -396,7 +431,7 @@ export type Database = {
           content: string
           created_at: string
           parent_reply_id: number | null
-          post_id: number
+          post_id: number | null
           profile_id: string
           reply_id: number
           updated_at: string
@@ -405,7 +440,7 @@ export type Database = {
           content: string
           created_at?: string
           parent_reply_id?: number | null
-          post_id: number
+          post_id?: number | null
           profile_id: string
           reply_id?: never
           updated_at?: string
@@ -414,7 +449,7 @@ export type Database = {
           content?: string
           created_at?: string
           parent_reply_id?: number | null
-          post_id?: number
+          post_id?: number | null
           profile_id?: string
           reply_id?: never
           updated_at?: string
@@ -426,6 +461,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "post_replies"
             referencedColumns: ["reply_id"]
+          },
+          {
+            foreignKeyName: "post_replies_post_id_posts_post_id_fk"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_post_detail_view"
+            referencedColumns: ["post_id"]
           },
           {
             foreignKeyName: "post_replies_post_id_posts_post_id_fk"
@@ -493,6 +535,13 @@ export type Database = {
             foreignKeyName: "posts_topic_id_topics_topic_id_fk"
             columns: ["topic_id"]
             isOneToOne: false
+            referencedRelation: "community_post_detail_view"
+            referencedColumns: ["topic_id"]
+          },
+          {
+            foreignKeyName: "posts_topic_id_topics_topic_id_fk"
+            columns: ["topic_id"]
+            isOneToOne: false
             referencedRelation: "topics"
             referencedColumns: ["topic_id"]
           },
@@ -516,7 +565,7 @@ export type Database = {
             foreignKeyName: "product_likes_product_id_products_product_id_fk"
             columns: ["product_id"]
             isOneToOne: false
-            referencedRelation: "product_list_view"
+            referencedRelation: "product_overview_view"
             referencedColumns: ["product_id"]
           },
           {
@@ -547,7 +596,6 @@ export type Database = {
           stats: Json
           tags: string[]
           updated_at: string
-          upvotes: number
           url: string
         }
         Insert: {
@@ -561,7 +609,6 @@ export type Database = {
           stats?: Json
           tags: string[]
           updated_at?: string
-          upvotes?: number
           url: string
         }
         Update: {
@@ -575,7 +622,6 @@ export type Database = {
           stats?: Json
           tags?: string[]
           updated_at?: string
-          upvotes?: number
           url?: string
         }
         Relationships: [
@@ -667,7 +713,7 @@ export type Database = {
             foreignKeyName: "reviews_product_id_products_product_id_fk"
             columns: ["product_id"]
             isOneToOne: false
-            referencedRelation: "product_list_view"
+            referencedRelation: "product_overview_view"
             referencedColumns: ["product_id"]
           },
           {
@@ -765,6 +811,26 @@ export type Database = {
       }
     }
     Views: {
+      community_post_detail_view: {
+        Row: {
+          author_avatar: string | null
+          author_created_at: string | null
+          author_name: string | null
+          author_nickname: string | null
+          author_position: Database["public"]["Enums"]["position_types"] | null
+          content: string | null
+          created_at: string | null
+          post_id: number | null
+          products: number | null
+          replies: number | null
+          title: string | null
+          topic_id: number | null
+          topic_name: string | null
+          topic_slug: string | null
+          upvotes: number | null
+        }
+        Relationships: []
+      }
       community_post_list_view: {
         Row: {
           author: string | null
@@ -790,35 +856,34 @@ export type Database = {
         }
         Relationships: []
       }
-      product_list_view: {
+      product_overview_view: {
         Row: {
-          category: string | null
+          average_rating: number | null
           created_at: string | null
           description: string | null
+          icon: string | null
           name: string | null
           product_id: number | null
-          profile_id: string | null
-          stats: Json | null
+          reviews: string | null
           tags: string[] | null
-          updated_at: string | null
-          upvotes: number | null
+          upvotes: string | null
           url: string | null
+          views: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "products_profile_id_profiles_profile_id_fk"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["profile_id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Functions: {
-      [_ in never]: never
+      track_event: {
+        Args: {
+          event_data: Json
+          event_type: Database["public"]["Enums"]["event_types"]
+        }
+        Returns: undefined
+      }
     }
     Enums: {
+      event_types: "product_view" | "profile_view" | "product_visit"
       job_salary_types:
         | "all"
         | "1000"
@@ -969,6 +1034,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      event_types: ["product_view", "profile_view", "product_visit"],
       job_salary_types: [
         "all",
         "1000",

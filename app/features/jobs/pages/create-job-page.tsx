@@ -1,15 +1,73 @@
-import { Form } from "react-router";
+import { Form, redirect, useNavigation } from "react-router";
 import { Hero } from "~/common/components/hero";
 import InputPair from "~/common/components/input-pair";
 import SelectPair from "~/common/components/select-pair";
 import { Button } from "~/common/components/ui/button";
 import { JOB_SALARY_TYPES, JOB_TYPES, WORK_TYPES } from "../constants";
+import { makeSSRClient } from "~/supa-client";
+import type { Route } from "./+types/create-job-page";
+import { getLoggedInUserId } from "~/features/users/queries";
+import z from "zod";
+import { createJob } from "../mutations";
+import { LoaderCircleIcon } from "lucide-react";
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  await getLoggedInUserId(client);
+};
+
+export const formSchema = z.object({
+  position: z.string().min(1),
+  overview: z.string().min(1),
+  responsibilities: z.string().min(1),
+  qualifications: z.string().min(1),
+  preferredQualifications: z.string().min(1),
+  skills: z.string().min(1),
+  companyName: z.string().min(1),
+  companyLogo: z.string().min(1),
+  companyLocation: z.string().min(1),
+  companyWebsite: z.string().min(1),
+  employmentType: z.string().min(1),
+  work: z.enum(WORK_TYPES.map((work) => work.value)),
+  salary: z.enum(JOB_SALARY_TYPES.map((salary) => salary.value)),
+});
+
+export const action = async ({ request }: Route.ActionArgs) => {
+  const { client } = makeSSRClient(request);
+  await getLoggedInUserId(client);
+  const formData = await request.formData();
+  const { success, data, error } = formSchema.safeParse(
+    Object.fromEntries(formData),
+  );
+  if (!success) {
+    return { formErrors: error.flatten().fieldErrors };
+  }
+  const {
+    position,
+    overview,
+    responsibilities,
+    qualifications,
+    preferredQualifications,
+    skills,
+    companyName,
+    companyLogo,
+    companyLocation,
+    companyWebsite,
+    employmentType,
+    work,
+    salary,
+  } = data;
+  const { job_id } = await createJob(client, data);
+  return redirect(`/jobs/${job_id}`);
+};
 
 export default function CreateJobPage() {
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting" || navigation.state === "loading";
   return (
     <div className="space-y-10">
       <Hero title="공고 등록" description="공고 등록 페이지" />
-      <Form className="flex flex-col max-w-5xl mx-auto gap-20">
+      <Form method="post" className="flex flex-col max-w-5xl mx-auto gap-20">
         <div className="grid grid-cols-3 gap-10">
           <InputPair
             label="포지션"
@@ -117,8 +175,8 @@ export default function CreateJobPage() {
             }))}
           />
         </div>
-        <Button className="w-full" type="submit">
-          공고 등록하기
+        <Button className="w-full" type="submit" disabled={isSubmitting}>
+          {isSubmitting ? <LoaderCircleIcon className="animate-spin" /> : "공고 등록하기"}
         </Button>
       </Form>
     </div>

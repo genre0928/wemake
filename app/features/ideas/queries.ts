@@ -1,6 +1,7 @@
-import client from "~/supa-client";
+import { type Database } from "~/supa-client";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
-export const getIdeas = async ({ limit = 7 }: { limit?: number }) => {
+export const getIdeas = async (client: SupabaseClient<Database>, { limit = 7 }: { limit?: number }) => {
   const { data, error } = await client
     .from("idea_list_view")
     .select("*")
@@ -11,7 +12,7 @@ export const getIdeas = async ({ limit = 7 }: { limit?: number }) => {
   return data;
 };
 
-export const getIdea = async (ideaId: number) => {
+export const getIdea = async (client: SupabaseClient<Database>, ideaId: number) => {
   const { data, error } = await client
     .from("idea_list_view")
     .select("*")

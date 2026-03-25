@@ -20,6 +20,8 @@ import { posts, topics } from "../schema";
 import type { Route } from "./+types/community-page";
 import { Suspense } from "react";
 import z from "zod";
+import { DateTime } from "luxon";
+import { makeSSRClient } from "~/supa-client";
 
 const searchParamsSchema = z.object({
   sort: z.enum(["newest", "popular"]).optional().default("newest"),
@@ -40,9 +42,10 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
     throw new Error("Invalid parameters");
   }
   const { sort, period, keyword, category } = data;
+  const { client } = makeSSRClient(request);
   const [topics, posts] = await Promise.all([
-    getTopics(),
-    getPosts({ limit: 7, sort, period, keyword, category }),
+    getTopics(client),
+    getPosts(client, { limit: 7, sort, period, keyword, category }),
   ]);
   return { topics, posts };
 };
@@ -154,7 +157,7 @@ export default function CommunityPage({ loaderData }: Route.ComponentProps) {
                   title={post.title!}
                   author={post.nickname!}
                   category={post.topic!}
-                  timeAgo={new Date(post.created_at!)}
+                  timeAgo={DateTime.fromISO(post.created_at!)}
                   expanded={true}
                   upvotes={post.upvotes!}
                 />
