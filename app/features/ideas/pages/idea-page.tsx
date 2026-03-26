@@ -1,10 +1,9 @@
 import { Hero } from "~/common/components/hero";
-import { IdeaCard } from "../components/idea-card";
 import type { Route } from "./+types/idea-page";
-import { Form, redirect, useParams } from "react-router";
+import { Form, redirect } from "react-router";
 import { DotIcon, EyeIcon, HeartIcon } from "lucide-react";
 import { Button } from "~/common/components/ui/button";
-import { getIdea, getIdeas } from "../queries";
+import { getIdea } from "../queries";
 import { DateTime } from "luxon";
 import { makeSSRClient } from "~/supa-client";
 import { getLoggedInUserId } from "~/features/users/queries";
@@ -20,9 +19,6 @@ export const meta = ({ loaderData }: Route.ComponentProps) => {
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
   const { client } = makeSSRClient(request);
   const idea = await getIdea(client, Number(params.ideaId));
-  if (idea.is_claimed) {
-    return redirect("/ideas");
-  }
   return { idea };
 };
 

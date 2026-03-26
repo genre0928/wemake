@@ -34,11 +34,11 @@ export function IdeaCard({
 }: IdeaCardProps) {
   return (
     <Card className="bg-transparent hover:bg-primary/10">
-      <Link to={isClaimed || owner ? "" : `/ideas/${ideaId}`}>
+      <Link to={`/ideas/${ideaId}`} aria-disabled={isClaimed && owner}>
         <CardHeader>
           <CardTitle className="text-lg leading-tight tracking-tight line-clamp-2">
             <span
-              className={cn(!isClaimed && "line-through text-muted-foreground")}
+              className={cn(isClaimed && "line-through text-muted-foreground")}
             >
               {title}
             </span>
@@ -56,7 +56,7 @@ export function IdeaCard({
         )}
       </Link>
       <CardFooter className="gap-2 justify-end">
-        {!isClaimed || !owner ? (
+        {!isClaimed ? (
           <>
             <Button variant="outline">
               <HeartIcon className="size-4" />

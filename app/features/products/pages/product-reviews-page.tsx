@@ -14,6 +14,10 @@ import { useOutletContext } from "react-router";
 import { getReviews } from "../queries";
 import { DateTime } from "luxon";
 import { makeSSRClient } from "~/supa-client";
+import { getLoggedInUserId } from "~/features/users/queries";
+import { z } from "zod";
+import { createReview } from "../mutations";
+import { useEffect, useState } from "react";
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
   const { client } = makeSSRClient(request);
@@ -21,12 +25,44 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
   return { reviews };
 };
 
+const formSchema = z.object({
+  rating: z.coerce.number().min(0).max(5),
+  review: z.string().min(1),
+});
+
+export const action = async ({ request, params }: Route.ActionArgs) => {
+  const { client } = makeSSRClient(request);
+  const userId = await getLoggedInUserId(client);
+  const formData = await request.formData();
+  const { success, data, error } = formSchema.safeParse(
+    Object.fromEntries(formData),
+  );
+  if (!success) {
+    return { formErrors: error.flatten().fieldErrors };
+  }
+  const { rating, review } = data;
+  await createReview(client, {
+    product_id: Number(params.productId),
+    profile_id: userId,
+    rating,
+    review,
+  });
+  return { success: true };
+};
+
 export default function ProductReviewsPage({
   loaderData,
+  actionData,
 }: Route.ComponentProps) {
   const { reviews } = useOutletContext<{ reviews: number }>();
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (actionData?.success) {
+      setOpen(false);
+    }
+  }, [actionData]);
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <div className="max-w-1/2 space-y-5">
         {/* 리뷰 총 갯수와 리뷰 작성하기 섹션 */}
         <div className="flex justify-between items-center">

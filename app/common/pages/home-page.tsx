@@ -70,6 +70,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
         />
         {loaderData.products.map((product) => (
           <ProductCard
+            key={product.product_id}
             productId={product.product_id}
             name={product.name}
             description={product.description}
@@ -89,6 +90,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
         />
         {loaderData.posts.map((post) => (
           <PostCard
+            key={post.post_id}
             postId={post.post_id!}
             title={post.title!}
             author={post.nickname!}
@@ -126,6 +128,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
         />
         {loaderData.jobs.map((job) => (
           <JobCard
+            key={job.job_id}
             jobId={job.job_id}
             companyName={job.company_name}
             timeAgo={job.created_at}

@@ -1,6 +1,6 @@
-import { StarHalf, Star as StarIcon } from "lucide-react";
+import { LoaderCircleIcon, StarHalf, Star as StarIcon } from "lucide-react";
 import { useState } from "react";
-import { Form } from "react-router";
+import { Form, useActionData, useNavigation } from "react-router";
 import InputPair from "~/common/components/input-pair";
 import { Button } from "~/common/components/ui/button";
 import {
@@ -10,20 +10,24 @@ import {
   DialogTitle,
   DialogFooter,
 } from "~/common/components/ui/dialog";
+import type { action } from "../pages/product-reviews-page";
 
 const STAR_STEP = 0.5;
 
 export default function CreateReviewDialog() {
   const [hoveredValue, setHoveredValue] = useState(0);
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(5);
   const displayValue = hoveredValue > 0 ? hoveredValue : rating;
-
+  const actionData = useActionData<typeof action>();
+  const navigation = useNavigation();
+  const isSubmitting =
+    navigation.state === "submitting" || navigation.state === "loading";
   return (
     <DialogContent>
       <DialogHeader>
         <DialogTitle className="text-2xl font-bold">리뷰 작성하기</DialogTitle>
       </DialogHeader>
-      <Form className="space-y-5">
+      <Form className="space-y-5" method="post">
         {/* 별점 섹션 (0.5점 단위) */}
         <div className="flex gap-3">
           <div className="flex gap-0.5" onMouseLeave={() => setHoveredValue(0)}>
@@ -86,6 +90,9 @@ export default function CreateReviewDialog() {
               );
             })}
           </div>
+          {actionData?.formErrors?.rating && (
+            <div className="text-red-500">{actionData.formErrors.rating}</div>
+          )}
           <div className="flex flex-col text-sm text-muted-foreground">
             <span>제품의 별점을 매겨주세요 (0.5점 단위)</span>
             <span>(체크하지 않을 경우 5점으로 설정)</span>
@@ -95,12 +102,21 @@ export default function CreateReviewDialog() {
         <InputPair
           textArea
           required
-          name="content"
-          id="content"
+          name="review"
+          id="review"
           placeholder="리뷰를 작성해주세요"
         />
+        {actionData?.formErrors?.review && (
+          <div className="text-red-500">{actionData.formErrors.review}</div>
+        )}
         <DialogFooter>
-          <Button type="submit">리뷰 작성</Button>
+          <Button type="submit">
+            {isSubmitting ? (
+              <LoaderCircleIcon className="animate-spin" />
+            ) : (
+              "리뷰 작성"
+            )}
+          </Button>
         </DialogFooter>
       </Form>
     </DialogContent>
