@@ -1,12 +1,14 @@
 import { Hero } from "~/common/components/hero";
 import { IdeaCard } from "../components/idea-card";
 import type { Route } from "./+types/idea-page";
-import { useParams } from "react-router";
+import { Form, redirect, useParams } from "react-router";
 import { DotIcon, EyeIcon, HeartIcon } from "lucide-react";
 import { Button } from "~/common/components/ui/button";
 import { getIdea, getIdeas } from "../queries";
 import { DateTime } from "luxon";
 import { makeSSRClient } from "~/supa-client";
+import { getLoggedInUserId } from "~/features/users/queries";
+import { claimIdea } from "../mutations";
 
 export const meta = ({ loaderData }: Route.ComponentProps) => {
   return [
@@ -18,8 +20,23 @@ export const meta = ({ loaderData }: Route.ComponentProps) => {
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
   const { client } = makeSSRClient(request);
   const idea = await getIdea(client, Number(params.ideaId));
+  if (idea.is_claimed) {
+    return redirect("/ideas");
+  }
   return { idea };
 };
+
+export const action = async ({ request, params }: Route.ActionArgs) => {
+  const { client } = makeSSRClient(request);
+  const userId = await getLoggedInUserId(client);
+  const idea = await getIdea(client, Number(params.ideaId));
+  if (idea.is_claimed) {
+    return { isClaimed: true };
+  }
+  await claimIdea(client, { ideaId: Number(params.ideaId), userId });
+  return redirect("/my/dashboard/ideas");
+};
+
 export default function IdeaPage({ loaderData }: Route.ComponentProps) {
   return (
     <div className="space-y-10">
@@ -41,7 +58,16 @@ export default function IdeaPage({ loaderData }: Route.ComponentProps) {
           </div>
         </div>
         <div>
-          <Button>아이디어 구매하기 &rarr;</Button>
+          <Form method="post">
+            <Button
+              disabled={loaderData.idea.is_claimed}
+              className="cursor-pointer"
+            >
+              {loaderData.idea.is_claimed
+                ? "이미 판매된 아이디어입니다"
+                : "아이디어 구매하기"}
+            </Button>
+          </Form>
         </div>
       </div>
     </div>

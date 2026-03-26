@@ -98,6 +98,7 @@ export function ReplyCard({
                   id="comment"
                   placeholder="댓글을 입력해주세요"
                   textArea
+                  defaultValue={`@${nickname} `}
                 />
               </div>
               <div className="flex justify-end">

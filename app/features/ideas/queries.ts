@@ -23,3 +23,15 @@ export const getIdea = async (client: SupabaseClient<Database>, ideaId: number) 
   }
   return data;
 };
+
+export const getMyClaimedIdeas = async (client: SupabaseClient<Database>, { userId, limit = 7 }: { userId: string, limit?: number }) => {
+  const { data, error } = await client
+    .from("ideas")
+    .select("*")
+    .eq("claimed_by", userId)
+    .limit(limit);
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+};

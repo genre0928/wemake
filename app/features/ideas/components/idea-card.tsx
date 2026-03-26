@@ -18,7 +18,8 @@ export interface IdeaCardProps {
   timeAgo: string;
   likeCount: number;
   isLiked?: boolean;
-  isClaimed?: boolean;
+  isClaimed: boolean;
+  owner?: boolean;
 }
 
 export function IdeaCard({
@@ -28,11 +29,12 @@ export function IdeaCard({
   timeAgo,
   likeCount,
   isLiked = false,
-  isClaimed = false,
+  isClaimed,
+  owner,
 }: IdeaCardProps) {
   return (
-    <Link to={`/ideas/${ideaId}`}>
-      <Card className="bg-transparent hover:bg-primary/10 transition-colors duration-200 ease-in-out">
+    <Card className="bg-transparent hover:bg-primary/10">
+      <Link to={isClaimed || owner ? "" : `/ideas/${ideaId}`}>
         <CardHeader>
           <CardTitle className="text-lg leading-tight tracking-tight line-clamp-2">
             <span
@@ -42,31 +44,37 @@ export function IdeaCard({
             </span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex items-center gap-2">
-          <div className="flex items-center gap-1 text-sm leading-tight">
-            <EyeIcon className="size-4" />
-            <span>{viewCount}</span>
-            <DotIcon className="size-4" />
-            <span>{DateTime.fromISO(timeAgo).toRelative()}</span>
-          </div>
-        </CardContent>
-        <CardFooter className="gap-2 justify-end">
-          <Button variant="outline">
-            <HeartIcon className="size-4" />
-            <span>{likeCount}</span>
-          </Button>
-          {isClaimed ? (
+        {!owner && (
+          <CardContent className="flex items-center gap-2">
+            <div className="flex items-center gap-1 text-sm leading-tight">
+              <EyeIcon className="size-4" />
+              <span>{viewCount}</span>
+              <DotIcon className="size-4" />
+              <span>{DateTime.fromISO(timeAgo).toRelative()}</span>
+            </div>
+          </CardContent>
+        )}
+      </Link>
+      <CardFooter className="gap-2 justify-end">
+        {!isClaimed || !owner ? (
+          <>
+            <Button variant="outline">
+              <HeartIcon className="size-4" />
+              <span>{likeCount}</span>
+            </Button>
             <Button asChild>
-              <div>구매하기 &rarr;</div>
+              <Link to={`/ideas/${ideaId}`}>
+                <div>구매하기 &rarr;</div>
+              </Link>
             </Button>
-          ) : (
-            <Button variant="outline" disabled>
-              <LockIcon className="size-4" />
-              <span>판매 완료</span>
-            </Button>
-          )}
-        </CardFooter>
-      </Card>
-    </Link>
+          </>
+        ) : (
+          <Button variant="outline" disabled>
+            <LockIcon className="size-4" />
+            <span>판매 완료</span>
+          </Button>
+        )}
+      </CardFooter>
+    </Card>
   );
 }
