@@ -3,6 +3,7 @@ import {
   Form,
   Link,
   redirect,
+  useFetcher,
   useNavigation,
   useOutletContext,
 } from "react-router";
@@ -23,13 +24,14 @@ import {
 } from "~/common/components/ui/breadcrumb";
 import { Button } from "~/common/components/ui/button";
 import type { Route } from "./+types/post-page";
-import { getPostById, getReplies } from "../queries";
+import { getPostById, getPosts, getReplies } from "../queries";
 import { DateTime } from "luxon";
 import { makeSSRClient } from "~/supa-client";
 import { getLoggedInUserId } from "~/features/users/queries";
 import z from "zod";
 import { createReply } from "../mutations";
 import { useEffect, useRef } from "react";
+import { cn } from "~/lib/utils";
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
   const { client } = makeSSRClient(request);
@@ -70,6 +72,19 @@ export default function PostPage({
   loaderData,
   actionData,
 }: Route.ComponentProps) {
+  const upvoteFetcher = useFetcher();
+  const replyFetcher = useFetcher();
+  const optimisticVotesCount =
+    upvoteFetcher.state === "idle"
+      ? loaderData.post.upvotes
+      : loaderData.post.upvotes + 1;
+  const optimisticIsUpvoted = upvoteFetcher.state === "idle" ? false : true;
+  const upvoteHandler = async () => {
+    await upvoteFetcher.submit(null, {
+      method: "post",
+      action: `/community/${loaderData.post.post_id}/upvote`,
+    });
+  };
   const { isLoggedIn, userProfile } = useOutletContext<{
     isLoggedIn: boolean;
     userProfile: {
@@ -122,10 +137,21 @@ export default function PostPage({
       <div className="col-span-4 space-y-10">
         {/* 게시글 정보 섹션 */}
         <div className="flex w-full items-start gap-10">
-          <Button variant="outline" className="flex flex-col size-16">
-            <HeartIcon className="size-4 shrink-0" />
-            <span>10</span>
-          </Button>
+          <upvoteFetcher.Form
+            className={cn(
+              "flex flex-col size-16 cursor-pointer",
+              optimisticIsUpvoted && "border-primary dark:border-primary",
+            )}
+            onClick={upvoteHandler}
+          >
+            <Button
+              variant="outline"
+              className="flex flex-col size-16 cursor-pointer"
+            >
+              <HeartIcon className="size-4 shrink-0" />
+              <span>10</span>
+            </Button>
+          </upvoteFetcher.Form>
           <div className="space-y-20 w-full">
             <div className="flex flex-col gap-2 w-3/4">
               <h2 className="text-3xl font-bold">{loaderData.post.title}</h2>

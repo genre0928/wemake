@@ -174,6 +174,7 @@ Supabase - BaaS(Backend as a Service)
 Drizzle ORM - SQL을 사용자 언어로 작성하게 도와주는 라이브러리(타입안정성 향상)
 
 Data 로딩 전략
+
 1. 비동기
 2. <await>
 3. prefetch
@@ -194,9 +195,47 @@ render - 요소가 렌더링 될 때
 3. 답글 css 구조 고민해보기(전체 width를 2/3로 제한하니까 댓글이 길어질수록 크기가 줄어듦)
 
 sql view 생성 순서
+
 1. 폴더에 sql 파일 생성 및 sql문 작성
 2. supabase sql 에디터 실행
 3. 생성한 view의 타입을 가져오기 위해 npm run db:typegen 실행
 
-** view 생성 시 nullable 타입 선정으로 오류 발생
+\*\* view 생성 시 nullable 타입 선정으로 오류 발생
 supa-client.ts에서 null 미허용으로 타입 덮어씌우기 하면 해결
+
+Row Level Security
+
+1. postgreSQL 기능 - DB 보호가 가능함
+2. Backend가 있는 경우 Authorization과 Authentication이 가능하지만 없는 경우 RLS를 통해 대체 가능하다(DB 접근 권한 등)
+   Backend가 없는 경우(React Native app, Flutter App, SPA 등 << 이유 알아보기>>)
+
+사용자 <> supabase 통신하는 경우와 action, loader 함수를 통해 통신하는 경우의 차이점 알아보기
+
+settings에서 업로드한 이미지 나오게끔 수정
+
+useFetcher()훅 공부하기 << 복수의 Form 사용 시 loading 상태를 분리하여 관리하기 위해서 사용함
+(settings-page 코드 참고)
+
+...rest 개념 알아두기, 나머지 속성을 모아서 하나의 객체로 만드는 REst Properties 문법
+
+featcher
+
+- url에 의존하지 않고 백엔드에 데이터 저장하기 위함
+- url보단 컴포넌트에 의존적
+- Form 컴포넌트 복수 사용하는 상황 및, 동일한 function을 페이지마다 구현하는 상황에 유용할 것 같음
+
+fetcher을 통해 데이터 fetch하는 방법
+
+1. const fetcher = useFetcher() react hook 사용
+2. <fetcher.Form> 내에 input 생성 후 value값 전달
+
+RLS 사용 시 policy 생성하는데 using 조건과 with check 조건이 있음 // 각 조건의 차이 공부하기
+
+transactional email - 쿠폰을 보내거나 하는 등의 역할을 하는 이메일
+loader이나 action에 데이터를 안보낼 것이므로 Form 컴포넌트가 아닌 form 태그를 사용한다함
+-- Form 컴포넌트에 ㅈ데이터 전달기능이 있나?
+
+코드 챌린지
+
+1. post-page view 변경 등을 통해 upvotes와 isUpvoted 가져와서 event 적용해보기
+

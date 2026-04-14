@@ -1,4 +1,4 @@
-import { Outlet } from "react-router";
+import { Outlet, useOutletContext } from "react-router";
 import {
   Sidebar,
   SidebarContent,
@@ -7,8 +7,24 @@ import {
   SidebarProvider,
 } from "~/common/components/ui/sidebar";
 import { MessageCard } from "../components/message-card";
+import { makeSSRClient } from "~/supa-client";
+import type { Route } from "./+types/messages-layout";
+import { getLoggedInUserId, getMessages } from "../queries";
 
-export default function MessagesLayout() {
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const userId = await getLoggedInUserId(client);
+  const messages = await getMessages(client, userId);
+  return { messages };
+};
+
+export default function MessagesLayout({ loaderData }: Route.ComponentProps) {
+  const { userId, name, avatar } = useOutletContext<{
+    userId: string;
+    name: string;
+    avatar: string;
+  }>();
+  console.log(loaderData)
   return (
     // SidebarProvider 컴포넌트가 flex wrapper 역할을 해주고 있다고 생각해야함
     <SidebarProvider className="overflow-hidden max-h-[calc(100vh-14rem)] h-[calc(100vh-14rem)] min-h-full">
@@ -17,13 +33,14 @@ export default function MessagesLayout() {
         <SidebarContent>
           <SidebarGroup>
             <SidebarMenu className="space-y-1">
-              {Array.from({ length: 10 }, (_, index) => (
+              {loaderData.messages.map((message) => (
                 <MessageCard
-                  id={index + 1}
-                  key={`message-card-${index + 1}`}
-                  name={`닉네임 ${index + 1}`}
-                  lastMessage={`마지막 대화내용입니다 아주아주 길어요`}
-                  avatarSrc={`https://github.com/genre0928.png`}
+                  id={message.message_room_id}
+                  key={message.message_room_id}
+                  name={message.name}
+                  lastMessage={message.last_message}
+                  avatarSrc={message.avatar}
+                  avatarFallback={message.name.charAt(0)}
                 />
               ))}
             </SidebarMenu>
@@ -32,7 +49,7 @@ export default function MessagesLayout() {
       </Sidebar>
       {/* Outlet 섹션 */}
       <div className="h-full flex-1">
-        <Outlet />
+        <Outlet context={{ userId, name, avatar }} />
       </div>
     </SidebarProvider>
   );

@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useFetcher } from "react-router";
 import { Button } from "~/common/components/ui/button";
 import {
   Card,
@@ -25,6 +25,7 @@ export interface PostCardProps {
   avatarFallback?: string;
   expanded?: boolean;
   upvotes: number;
+  isUpvoted: boolean;
 }
 
 export function PostCard({
@@ -37,7 +38,17 @@ export function PostCard({
   avatarFallback = "N",
   expanded = false,
   upvotes,
+  isUpvoted,
 }: PostCardProps) {
+  const fetcher = useFetcher();
+  const optimisticVotesCount = fetcher.state === "idle" ? upvotes : isUpvoted ? upvotes - 1 : upvotes + 1;
+  const optimisticIsUpvoted = fetcher.state === "idle" ? isUpvoted : !isUpvoted;
+  const upvoteHandler = async () => {
+    await fetcher.submit(null, {
+      method: "post",
+      action: `/community/${postId}/upvote`,
+    });
+  };
   return (
     <Card
       className={cn(
@@ -78,9 +89,21 @@ export function PostCard({
       )}
       {expanded && (
         <CardFooter>
-          <Button variant="outline" className="flex flex-col size-16">
-            <HeartIcon className="size-4 shrink-0" />
-            <span>{upvotes}</span>
+          <Button
+            variant="outline"
+            className={cn(
+              "flex flex-col size-16 cursor-pointer ",
+              optimisticIsUpvoted && "border-primary dark:border-primary",
+            )}
+            onClick={upvoteHandler}
+          >
+            <HeartIcon
+              className={cn(
+                "size-4 shrink-0",
+                optimisticIsUpvoted && "fill-primary text-primary",
+              )}
+            />
+            <span>{optimisticVotesCount}</span>
           </Button>
         </CardFooter>
       )}

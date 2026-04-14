@@ -57,6 +57,7 @@ export default [
   ...prefix("ideas", [
     index("features/ideas/pages/ideas-page.tsx"),
     route("/:ideaId", "features/ideas/pages/idea-page.tsx"),
+    route("/create", "features/ideas/pages/create-idea-page.tsx"),
   ]),
   ...prefix("jobs", [
     index("features/jobs/pages/jobs-page.tsx"),
@@ -81,6 +82,7 @@ export default [
   ...prefix("community", [
     index("features/community/pages/community-page.tsx"),
     route("/:postId", "features/community/pages/post-page.tsx"),
+    route("/:postId/upvote", "features/community/pages/post-upvote-page.tsx"),
     route("/create", "features/community/pages/create-post-page.tsx"),
   ]),
   ...prefix("teams", [
@@ -91,6 +93,7 @@ export default [
   ...prefix("my", [
     route("/settings", "features/users/pages/settings-page.tsx"),
     route("/notifications", "features/users/pages/notifications-page.tsx"),
+    route("/notifications/:notificationId/seen", "features/users/pages/notification-seen-page.tsx"),
     route("/profile", "features/users/pages/my-profile-page.tsx"),
     layout("features/users/layouts/dashboard-layout.tsx", [
       ...prefix("dashboard", [
@@ -105,7 +108,7 @@ export default [
     layout("features/users/layouts/messages-layout.tsx", [
       ...prefix("messages", [
         index("features/users/pages/messages-page.tsx"),
-        route("/:messageId", "features/users/pages/message-page.tsx"),
+        route("/:messageRoomId", "features/users/pages/message-page.tsx"),
       ]),
     ]),
   ]),
@@ -115,5 +118,7 @@ export default [
       route("/products", "features/users/pages/profile-products-page.tsx"),
       route("/posts", "features/users/pages/profile-posts-page.tsx"),
     ]),
+    route("/messages", "features/users/pages/send-message-page.tsx"),
+    route("/welcome", "features/users/pages/welcome-page.tsx")
   ]),
 ] satisfies RouteConfig;

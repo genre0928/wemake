@@ -294,7 +294,15 @@ export type Database = {
           message_room_id?: number | null
           sender_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["profile_id"]
+          },
+        ]
       }
       notifications: {
         Row: {
@@ -836,6 +844,7 @@ export type Database = {
           author: string | null
           avatar: string | null
           created_at: string | null
+          is_upvoted: boolean | null
           nickname: string | null
           post_id: number | null
           title: string | null
@@ -850,11 +859,45 @@ export type Database = {
           description: string | null
           idea_id: number | null
           is_claimed: boolean | null
+          is_upvoted: boolean | null
           title: string | null
           upvotes: number | null
           views: number | null
         }
         Relationships: []
+      }
+      messages_view: {
+        Row: {
+          avatar: string | null
+          last_message: string | null
+          message_room_id: number | null
+          name: string | null
+          other_profile_id: string | null
+          profile_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_room_members_message_room_id_message_rooms_message_room"
+            columns: ["message_room_id"]
+            isOneToOne: false
+            referencedRelation: "message_rooms"
+            referencedColumns: ["message_room_id"]
+          },
+          {
+            foreignKeyName: "message_room_members_profile_id_profiles_profile_id_fk"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "message_room_members_profile_id_profiles_profile_id_fk"
+            columns: ["other_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["profile_id"]
+          },
+        ]
       }
       product_overview_view: {
         Row: {
@@ -862,6 +905,7 @@ export type Database = {
           created_at: string | null
           description: string | null
           icon: string | null
+          is_upvoted: boolean | null
           name: string | null
           product_id: number | null
           reviews: string | null
@@ -874,6 +918,27 @@ export type Database = {
       }
     }
     Functions: {
+      get_dashboard_stats: {
+        Args: { user_id: string }
+        Returns: {
+          month: string
+          views: number
+        }[]
+      }
+      get_product_stats: {
+        Args: { product_id: string }
+        Returns: {
+          month: string
+          product_reviews: number
+          product_views: number
+        }[]
+      }
+      get_room: {
+        Args: { from_user_id: string; to_user_id: string }
+        Returns: {
+          message_room_id: number
+        }[]
+      }
       track_event: {
         Args: {
           event_data: Json

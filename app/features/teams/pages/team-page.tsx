@@ -15,6 +15,8 @@ import {
 import type { Route } from "./+types/team-page";
 import { getTeamById } from "../queries";
 import { makeSSRClient } from "~/supa-client";
+import { Send } from "lucide-react";
+import { Form } from "react-router";
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
   const { client } = makeSSRClient(request);
@@ -54,7 +56,7 @@ export default function TeamPage({ loaderData }: Route.ComponentProps) {
         {/* 사이드바 섹션 */}
         <div className="flex flex-col col-span-2 border rounded-lg shadow-sm p-6 gap-5">
           <div className="text-2xl font-bold text-center">
-            {loaderData.team.name} 지원하기
+            {loaderData.team.name} 팀에 지원하기
           </div>
           <div className="space-y-5">
             <div className="flex gap-2 items-center">
@@ -64,24 +66,25 @@ export default function TeamPage({ loaderData }: Route.ComponentProps) {
               </Avatar>
               <div>@{loaderData.team.team_leader.name}</div>
             </div>
-            <div className="space-y-10">
+            <Form
+              className="space-y-10"
+              method="post"
+              action={`/users/${loaderData.team.team_leader.nickname}/messages`}
+            >
               <InputPair
-                label="지원 희망 포지션을 작성해주세요"
-                name="position"
-                id="position"
-                placeholder="ex) 디자이너, 엔지니어, PM"
-              />
-              <InputPair
-                label="지원 이유를 입력해주세요"
+                label="지원 메시지를 입력해주세요"
                 description="(100자 이내로 작성해주세요)"
-                name="reason"
-                id="reason"
-                placeholder="지원 이유를 입력해주세요"
+                name="content"
+                id="content"
+                placeholder="여기에 작성해주세요"
                 textArea
               />
-            </div>
+              <Button className="w-full">
+                <span>DM 보내기</span>
+                <Send className="size-4" />
+              </Button>
+            </Form>
           </div>
-          <Button className="w-full">지원하기</Button>
         </div>
       </div>
     </div>

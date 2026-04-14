@@ -155,6 +155,7 @@ interface NavigationProps {
     nickname: string;
     email: string;
   } | null;
+  notificationsCount: number;
 }
 
 export default function Navigation({
@@ -162,6 +163,7 @@ export default function Navigation({
   hasNotifications,
   hasMessages,
   profile,
+  notificationsCount,
 }: NavigationProps) {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const handleDarkMode = () => {
@@ -262,7 +264,7 @@ export default function Navigation({
               </Link>
               {hasNotifications && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full size-4 flex items-center justify-center">
-                  1
+                  {notificationsCount}
                 </span>
               )}
             </Button>

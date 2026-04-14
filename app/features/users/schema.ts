@@ -12,7 +12,6 @@ import {
 import { POSITIONS_OPTIONS } from "./constants";
 import { products } from "../products/schema";
 import { posts } from "../community/schema";
-import { no } from "zod/v4/locales";
 
 export const potisitionTypes = pgEnum(
   "position_types",
@@ -107,3 +106,17 @@ export const messageRoomMembers = pgTable(
     primaryKey({ columns: [table.message_room_id, table.profile_id] }),
   ],
 );
+
+export const messages = pgTable("messages", {
+  message_id: bigint({ mode: "number" })
+    .primaryKey()
+    .generatedAlwaysAsIdentity(),
+  message_room_id: bigint({ mode: "number" }).references(() => messageRooms.message_room_id, {
+    onDelete: "cascade",
+  }).notNull(),
+  sender_id: uuid().references(() => profiles.profile_id, {
+    onDelete: "cascade",
+  }).notNull(),
+  content: text().notNull(),
+  created_at: timestamp().notNull().defaultNow(),
+});

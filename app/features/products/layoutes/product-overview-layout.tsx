@@ -4,6 +4,7 @@ import { Button } from "~/common/components/ui/button";
 import type { Route } from "./+types/product-overview-layout";
 import { getProductById } from "../queries";
 import { makeSSRClient } from "~/supa-client";
+import { cn } from "~/lib/utils";
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
   const { client } = makeSSRClient(request);
@@ -63,8 +64,8 @@ export default function ProductOverviewLayout({
         </div>
         {/* 좋아요 버튼 */}
         <div className="flex items-center justify-center">
-          <Button variant="outline" className="size-24 flex flex-col">
-            <HeartIcon className="size-4 text-red-500" fill="currentColor" />
+          <Button variant="outline" className="size-24 flex flex-col cursor-pointer">
+            <HeartIcon className={cn("size-4", loaderData.product.is_upvoted && "fill-red-500")} />
             <div>{loaderData.product.upvotes}</div>
           </Button>
         </div>

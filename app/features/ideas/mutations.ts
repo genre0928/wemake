@@ -13,3 +13,16 @@ export const claimIdea = async (
     .eq("idea_id", ideaId);
   return { data, error };
 };
+
+export const insertIdeas = async (
+  client: SupabaseClient,
+  { descriptions }: { descriptions: string[] },
+) => {
+  const { data, error } = await client.from("ideas").insert(
+    descriptions.map((description: string) => ({
+      title: description,
+      description,
+    })),
+  );
+  if (error) throw error;
+};

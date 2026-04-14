@@ -97,6 +97,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             category={post.topic!}
             timeAgo={DateTime.fromISO(post.created_at!)}
             upvotes={post.upvotes!}
+            isUpvoted={post.is_upvoted}
           />
         ))}
       </div>
@@ -115,6 +116,7 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
             viewCount={idea.views}
             timeAgo={idea.created_at}
             likeCount={idea.upvotes}
+            isLiked={idea.is_upvoted}
             isClaimed={idea.is_claimed}
           />
         ))}

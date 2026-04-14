@@ -17,7 +17,7 @@ export interface IdeaCardProps {
   viewCount: number;
   timeAgo: string;
   likeCount: number;
-  isLiked?: boolean;
+  isLiked: boolean;
   isClaimed: boolean;
   owner?: boolean;
 }
@@ -28,7 +28,7 @@ export function IdeaCard({
   viewCount,
   timeAgo,
   likeCount,
-  isLiked = false,
+  isLiked,
   isClaimed,
   owner,
 }: IdeaCardProps) {
@@ -59,7 +59,7 @@ export function IdeaCard({
         {!isClaimed ? (
           <>
             <Button variant="outline">
-              <HeartIcon className="size-4" />
+              <HeartIcon className={cn("size-4", isLiked && "fill-red-500")} />
               <span>{likeCount}</span>
             </Button>
             <Button asChild>

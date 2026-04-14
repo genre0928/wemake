@@ -6,7 +6,7 @@ import { makeSSRClient } from "~/supa-client";
 
 export const loader = async ({request} : Route.LoaderArgs) => {
   const { client } = makeSSRClient(request);
-  const ideas = await getIdeas(client, { limit: 10 });
+  const ideas = await getIdeas(client, { limit: 100 });
   return { ideas };
 }
 
@@ -23,7 +23,7 @@ export default function IdeasPage({ loaderData }: Route.ComponentProps) {
             viewCount={idea.views}
             timeAgo={idea.created_at}
             likeCount={idea.upvotes}
-            isLiked={false}
+            isLiked={idea.is_upvoted}
             isClaimed={idea.is_claimed}
           />))}
       </div>

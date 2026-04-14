@@ -19,6 +19,7 @@ export interface ProductCardProps {
   views: string;
   upvotes: string;
   createdAt: string;
+  isUpvoted?: boolean;
 }
 
 export function ProductCard({
@@ -29,6 +30,7 @@ export function ProductCard({
   views,
   upvotes,
   createdAt,
+  isUpvoted = false,
 }: ProductCardProps) {
   return (
     <Card className="bg-transparent hover:bg-primary/10">
@@ -68,7 +70,7 @@ export function ProductCard({
             variant="outline"
             className="flex flex-col size-16 cursor-pointer"
           >
-            <HeartIcon className={cn("size-4")} />
+            <HeartIcon className={cn("size-4", isUpvoted && "fill-red-500")} />
             <span>{upvotes}</span>
           </Button>
         </CardFooter>

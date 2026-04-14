@@ -30,7 +30,8 @@ export const getTeamById = async (client: SupabaseClient<Database>, teamId: numb
       *,
       team_leader:profiles!team_leader_id(
         name,
-        avatar
+        avatar,
+        nickname
       )
     `)
     .eq("team_id", teamId)

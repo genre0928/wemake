@@ -30,7 +30,7 @@ const searchParamsSchema = z.object({
     .optional()
     .default("all"),
   keyword: z.string().optional(),
-  category : z.string().optional(),
+  category: z.string().optional(),
 });
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
@@ -160,6 +160,7 @@ export default function CommunityPage({ loaderData }: Route.ComponentProps) {
                   timeAgo={DateTime.fromISO(post.created_at!)}
                   expanded={true}
                   upvotes={post.upvotes!}
+                  isUpvoted={post.is_upvoted}
                 />
               ))}
             </Suspense>
@@ -170,7 +171,7 @@ export default function CommunityPage({ loaderData }: Route.ComponentProps) {
           <span className="text-2xl font-bold">카테고리</span>
           <Suspense fallback={<div>Loading...</div>}>
             {loaderData.topics.map((topic) => (
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2" key={topic.slug}>
                 <Button
                   className="text-sm text-foreground"
                   variant="link"

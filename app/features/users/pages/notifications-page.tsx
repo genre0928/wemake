@@ -1,17 +1,42 @@
+import { makeSSRClient } from "~/supa-client";
 import { NotificationCard } from "../components/notification-card";
+import type { Route } from "./+types/notifications-page";
+import { getLoggedInUserId, getNotifications } from "../queries";
+import { DateTime } from "luxon";
 
-export default function NotificationsPage() {
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const userId = await getLoggedInUserId(client);
+  const notifications = await getNotifications(client, userId);
+  return { notifications };
+};
 
+export default function NotificationsPage({
+  loaderData,
+}: Route.ComponentProps) {
+  const { notifications } = loaderData;
   return (
     <div className="space-y-20">
       <h1 className="text-4xl font-bold">알림</h1>
       <div className="flex flex-col items-start gap-5">
-        <NotificationCard
-          seen={false}
-          title="닉네임님이 팔로우 하였습니다"
-          timeAgo="1분 전"
-          avatarFallback="CN"
-        />
+        {notifications.map((notification) => (
+          <NotificationCard
+            id={notification.notification_id as number}
+            key={notification.notification_id}
+            seen={notification.seen}
+            userName={notification.source.name}
+            productName={notification.product?.name ?? undefined}
+            postTitle={notification.post?.title ?? ""}
+            avatarSrc={notification.source.avatar ?? undefined}
+            type={notification.type}
+            payloadId={
+              notification.product?.product_id ??
+              notification.post?.post_id ??
+              null
+            }
+            timeAgo={DateTime.fromISO(notification.created_at ?? "")}
+          />
+        ))}
       </div>
     </div>
   );

@@ -6,12 +6,18 @@ import {
 } from "@supabase/ssr";
 import type { Database as SupabaseDatabase } from "../database.types";
 import type { MergeDeep, SetNonNullable } from "type-fest";
+import { createClient } from "@supabase/supabase-js";
 
 export type Database = MergeDeep<
   SupabaseDatabase,
   {
     public: {
       Views: {
+        messages_view: {
+          Row: SetNonNullable<
+            SupabaseDatabase["public"]["Views"]["messages_view"]["Row"]
+          >;
+        };
         community_post_list_view: {
           Row: SetNonNullable<
             SupabaseDatabase["public"]["Views"]["community_post_list_view"]["Row"]
@@ -39,8 +45,8 @@ export type Database = MergeDeep<
 
 // createClient에서 쿠키 정보 수정이 가능한 브라우저 클라이언트를 createBrowserClient로 생성
 export const browserClient = createBrowserClient<Database>(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_KEY!,
+  "https://abwnuiykpzvhpquyrndi.supabase.co",
+  "sb_publishable_szy5LscIQ0d0dcmKwrA52w_4R3iiUnO",
 );
 
 export const makeSSRClient = (request: Request) => {
@@ -73,3 +79,8 @@ export const makeSSRClient = (request: Request) => {
   );
   return { client: serverSideClient, headers };
 };
+
+export const adminClient = createClient<Database>(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_KEY!,
+)

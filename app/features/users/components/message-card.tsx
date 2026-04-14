@@ -8,11 +8,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/common/components/ui/sidebar";
-import { cn } from "~/lib/utils";
 
 export interface MessageCardProps {
   id: number;
-  key: string;
+  key : number;
   name: string;
   lastMessage: string;
   avatarSrc?: string;

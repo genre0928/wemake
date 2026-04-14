@@ -4,7 +4,7 @@ import {
   SettingsIcon,
   UserPlusIcon,
 } from "lucide-react";
-import { Form, Link, NavLink, Outlet } from "react-router";
+import { Form, Link, NavLink, Outlet, useOutletContext } from "react-router";
 import {
   Avatar,
   AvatarFallback,
@@ -31,7 +31,10 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
   return { user };
 };
 
-export default function ProfileLayout({ loaderData }: Route.ComponentProps) {
+export default function ProfileLayout({
+  loaderData,
+  params,
+}: Route.ComponentProps) {
   const navigateOptions = [
     {
       label: "소개",
@@ -40,6 +43,13 @@ export default function ProfileLayout({ loaderData }: Route.ComponentProps) {
     { label: "제품", url: `/users/${loaderData.user.nickname}/products` },
     { label: "게시글", url: `/users/${loaderData.user.nickname}/posts` },
   ];
+  const { isLoggedIn, userProfile } = useOutletContext<{
+    isLoggedIn: boolean;
+    userProfile?: {
+      nickname: string;
+    };
+  }>();
+  console.log(userProfile, params.nickname);
   return (
     <div className="space-y-15">
       {/* 프로필 헤더 섹션*/}
@@ -49,7 +59,9 @@ export default function ProfileLayout({ loaderData }: Route.ComponentProps) {
           {loaderData.user.avatar ? (
             <AvatarImage src={loaderData.user.avatar} />
           ) : (
-            <AvatarFallback className="text-2xl font-bold">{loaderData.user.name.charAt(0)}</AvatarFallback>
+            <AvatarFallback className="text-2xl font-bold">
+              {loaderData.user.name.charAt(0)}
+            </AvatarFallback>
           )}
         </Avatar>
         {/* 프로필 정보 섹션 */}
@@ -57,46 +69,54 @@ export default function ProfileLayout({ loaderData }: Route.ComponentProps) {
           <div className="flex gap-5">
             <h1 className="text-2xl font-semibold">{loaderData.user.name}</h1>
             {/* 팔로우 버튼 */}
-            <Button variant="outline" className="gap-2">
-              <UserPlusIcon className="size-4" />
-              <span className="text-sm">팔로우</span>
-            </Button>
-            {/* DM 보내기 버튼 */}
-            <Dialog>
-              <DialogTrigger asChild>
+            {isLoggedIn && userProfile?.nickname !== params.nickname && (
+              <>
                 <Button variant="outline" className="gap-2">
-                  <MessageCircleIcon className="size-4" />
-                  <span className="text-sm">DM</span>
+                  <UserPlusIcon className="size-4" />
+                  <span className="text-sm">팔로우</span>
                 </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>DM(Direct Message) 보내기</DialogTitle>
-                </DialogHeader>
-                <DialogDescription>
-                  <span className="font-semibold block mb-3">to. userName</span>
-                  <Form className="space-y-5">
-                    <Textarea
-                      name="message"
-                      id="message"
-                      placeholder="메시지를 입력해주세요"
-                    />
-                    <div className="flex justify-end">
-                      <Button variant="default" type="submit" className="">
-                        보내기
-                      </Button>
-                    </div>
-                  </Form>
-                </DialogDescription>
-              </DialogContent>
-            </Dialog>
+                {/* DM 보내기 버튼 */}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="gap-2">
+                      <MessageCircleIcon className="size-4" />
+                      <span className="text-sm">DM</span>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>DM(Direct Message) 보내기</DialogTitle>
+                    </DialogHeader>
+                    <DialogDescription>
+                      <span className="font-semibold block mb-3">
+                        to. userName
+                      </span>
+                      <Form className="space-y-5">
+                        <Textarea
+                          name="message"
+                          id="message"
+                          placeholder="메시지를 입력해주세요"
+                        />
+                        <div className="flex justify-end">
+                          <Button variant="default" type="submit" className="">
+                            보내기
+                          </Button>
+                        </div>
+                      </Form>
+                    </DialogDescription>
+                  </DialogContent>
+                </Dialog>
+              </>
+            )}
             {/* 수정 버튼 */}
-            <Button variant="outline" className="gap-2" asChild>
-              <Link to="/my/settings">
-                <EditIcon className="size-4" />
-                <span className="text-sm">수정</span>
-              </Link>
-            </Button>
+            {isLoggedIn && userProfile?.nickname === params.nickname && (
+              <Button variant="outline" className="gap-2" asChild>
+                <Link to="/my/settings">
+                  <EditIcon className="size-4" />
+                  <span className="text-sm">수정</span>
+                </Link>
+              </Button>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <span className="text-muted-foreground">
@@ -124,7 +144,7 @@ export default function ProfileLayout({ loaderData }: Route.ComponentProps) {
         ))}
       </div>
       <div className="max-w-3xl">
-        <Outlet context={{ user: loaderData.user }}/>
+        <Outlet context={{ user: loaderData.user }} />
       </div>
     </div>
   );
