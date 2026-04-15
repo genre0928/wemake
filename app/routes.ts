@@ -43,6 +43,10 @@ export default [
     route("/search", "features/products/pages/search-page.tsx"),
     route("/create", "features/products/pages/product-create-page.tsx"),
     route("/promotion", "features/products/pages/promotion-page.tsx"),
+    route(
+      "/promotion/success",
+      "features/products/pages/promotion-success-page.tsx",
+    ),
     ...prefix("/:productId", [
       index("features/products/pages/product-redirection-page.tsx"),
       layout("features/products/layoutes/product-overview-layout.tsx", [
@@ -93,7 +97,10 @@ export default [
   ...prefix("my", [
     route("/settings", "features/users/pages/settings-page.tsx"),
     route("/notifications", "features/users/pages/notifications-page.tsx"),
-    route("/notifications/:notificationId/seen", "features/users/pages/notification-seen-page.tsx"),
+    route(
+      "/notifications/:notificationId/seen",
+      "features/users/pages/notification-seen-page.tsx",
+    ),
     route("/profile", "features/users/pages/my-profile-page.tsx"),
     layout("features/users/layouts/dashboard-layout.tsx", [
       ...prefix("dashboard", [
@@ -119,6 +126,6 @@ export default [
       route("/posts", "features/users/pages/profile-posts-page.tsx"),
     ]),
     route("/messages", "features/users/pages/send-message-page.tsx"),
-    route("/welcome", "features/users/pages/welcome-page.tsx")
+    route("/welcome", "features/users/pages/welcome-page.tsx"),
   ]),
 ] satisfies RouteConfig;

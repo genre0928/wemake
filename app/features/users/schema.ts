@@ -3,6 +3,7 @@ import {
   boolean,
   jsonb,
   pgEnum,
+  pgPolicy,
   pgTable,
   primaryKey,
   text,
@@ -12,6 +13,8 @@ import {
 import { POSITIONS_OPTIONS } from "./constants";
 import { products } from "../products/schema";
 import { posts } from "../community/schema";
+import { authenticatedRole } from "drizzle-orm/supabase";
+import { sql } from "drizzle-orm";
 
 export const potisitionTypes = pgEnum(
   "position_types",
@@ -111,12 +114,50 @@ export const messages = pgTable("messages", {
   message_id: bigint({ mode: "number" })
     .primaryKey()
     .generatedAlwaysAsIdentity(),
-  message_room_id: bigint({ mode: "number" }).references(() => messageRooms.message_room_id, {
-    onDelete: "cascade",
-  }).notNull(),
-  sender_id: uuid().references(() => profiles.profile_id, {
-    onDelete: "cascade",
-  }).notNull(),
+  message_room_id: bigint({ mode: "number" })
+    .references(() => messageRooms.message_room_id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  sender_id: uuid()
+    .references(() => profiles.profile_id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
   content: text().notNull(),
   created_at: timestamp().notNull().defaultNow(),
 });
+
+// drizzle을 통해 policy 설정하는 방법 연습 table
+export const todos = pgTable(
+  "todos",
+  {
+    todo_id: bigint({ mode: "number" })
+      .primaryKey()
+      .generatedAlwaysAsIdentity(),
+    title: text().notNull(),
+    description: text().notNull(),
+    completed: boolean().notNull().default(false),
+    created_at: timestamp().notNull().defaultNow(),
+    updated_at: timestamp().notNull().defaultNow(),
+    profile_id: uuid()
+      .references(() => profiles.profile_id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+  },
+  (table) => [
+    pgPolicy("todos-insert-policy", {
+      for: "insert",
+      to: authenticatedRole,
+      as : "permissive",
+      withCheck : sql`auth.uid() = ${table.profile_id}`,
+    }),
+    pgPolicy("todos-select-policy", {
+      for : "select",
+      to : authenticatedRole,
+      as : "permissive",
+      using : sql`auth.uid() = ${table.profile_id}`,
+    }),
+  ],
+);

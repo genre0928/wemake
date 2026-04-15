@@ -230,11 +230,14 @@ fetcher을 통해 데이터 fetch하는 방법
 2. <fetcher.Form> 내에 input 생성 후 value값 전달
 
 RLS 사용 시 policy 생성하는데 using 조건과 with check 조건이 있음 // 각 조건의 차이 공부하기
+drizzle을 통해서 schema.ts에 pgTable 생성 시 두 번째 파라미터에 pgPolicy를 통해서도 설정 가능함
+(supabase에서 하거나 drizzle을 통해서 RLS 설정하거나 두 가지 선택이 가능)
 
 transactional email - 쿠폰을 보내거나 하는 등의 역할을 하는 이메일
 loader이나 action에 데이터를 안보낼 것이므로 Form 컴포넌트가 아닌 form 태그를 사용한다함
 -- Form 컴포넌트에 ㅈ데이터 전달기능이 있나?
 
+https://docs.tosspayments.com/guides/v2/payment-widget/integration / 토스페이먼츠 결제 docs
 코드 챌린지
 
 1. post-page view 변경 등을 통해 upvotes와 isUpvoted 가져와서 event 적용해보기

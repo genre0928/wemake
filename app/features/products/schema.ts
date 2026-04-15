@@ -1,6 +1,7 @@
 import {
   bigint,
   check,
+  boolean,
   jsonb,
   pgTable,
   primaryKey,
@@ -17,6 +18,7 @@ export const products = pgTable("products", {
     .primaryKey()
     .generatedAlwaysAsIdentity(),
   name: text().notNull(),
+  is_promoted: boolean().notNull().default(false),
   tags: text().array().notNull(),
   icon: text().notNull(),
   url: text().notNull(),

@@ -99,6 +99,20 @@
       "when": 1773468588787,
       "tag": "0013_silent_venus",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1776185082805,
+      "tag": "0014_lucky_sunspot",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1776264466356,
+      "tag": "0015_hard_bruce_banner",
+      "breakpoints": true
     }
   ]
 }
