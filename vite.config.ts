@@ -8,4 +8,7 @@ export default defineConfig({
   server: {
     allowedHosts: true,
   },
+  build: {
+    sourcemap: false,
+  },
 });
