@@ -1,12 +1,18 @@
 import { Hero } from "~/common/components/hero";
 import type { Route } from "./+types/product-create-page";
-import { Form } from "react-router";
+import { Form, redirect } from "react-router";
 import { Input } from "~/common/components/ui/input";
 import { Label } from "~/common/components/ui/label";
 import InputPair from "~/common/components/input-pair";
 import SelectPair from "~/common/components/select-pair";
 import { useState } from "react";
 import { Button } from "~/common/components/ui/button";
+import { makeSSRClient } from "~/supa-client";
+import { getLoggedInUserId } from "~/features/users/queries";
+import z from "zod";
+import { getCategories } from "../queries";
+import { createProduct } from "../mutations";
+import { LoaderCircleIcon } from "lucide-react";
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -15,7 +21,69 @@ export const meta: Route.MetaFunction = () => {
   ];
 };
 
-export default function ProductCreatePage() {
+const formSchema = z.object({
+  name: z.string().min(1),
+  tags: z.string().min(1),
+  url: z.string().min(1),
+  description: z.string().min(1),
+  category: z.string(),
+  image: z.instanceof(File).refine(
+    (file) => {
+      return file.size <= uploadImageSize && file.type.startsWith("image/");
+    },
+    {
+      message: "이미지 파일의 크기 또는 형식이 올바르지 않습니다.",
+    },
+  ),
+});
+
+const uploadImageSize = 2 * 1024 * 1024;
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const userId = await getLoggedInUserId(client);
+  const categories = await getCategories(client);
+  return { categories };
+};
+
+export const action = async ({ request }: Route.ActionArgs) => {
+  const { client } = makeSSRClient(request);
+  const userId = await getLoggedInUserId(client);
+  const formData = await request.formData();
+  const { data, success, error } = formSchema.safeParse(
+    Object.fromEntries(formData),
+  );
+  if (!success) {
+    return { formErrors: error.flatten().fieldErrors };
+  }
+  const { image, ...rest } = data;
+  const { data: uploadData, error: uploadError } = await client.storage
+    .from("icons")
+    .upload(`${userId}/${Date.now()}`, image, {
+      contentType: image.type,
+      upsert: false,
+    });
+  if (uploadError) {
+    return { formErrors: { image: [uploadError.message] } };
+  }
+  const {
+    data: { publicUrl },
+  } = await client.storage.from("icons").getPublicUrl(uploadData.path);
+  const productId = await createProduct(client, {
+    name: rest.name,
+    tags: rest.tags.split(","),
+    url: rest.url,
+    description: rest.description,
+    category_id: parseInt(rest.category),
+    imageUrl: publicUrl,
+    userId,
+  });
+  return redirect(`/products/${productId}`);
+};
+
+export default function ProductCreatePage({
+  loaderData,
+}: Route.ComponentProps) {
   const [image, setImage] = useState<File | null>(null);
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -23,10 +91,15 @@ export default function ProductCreatePage() {
       setImage(file);
     }
   };
+  const [isSubmitting, setIsSubmitting] = useState(false);
   return (
     <div>
       <Hero title="제품 등록" description="제품 등록 페이지" />
-      <Form className="flex flex-col max-w-5xl mx-auto gap-20">
+      <Form
+        className="flex flex-col max-w-5xl mx-auto gap-20"
+        method="post"
+        encType="multipart/form-data"
+      >
         <div className="flex gap-15">
           <div className="flex flex-col gap-7 flex-1">
             <InputPair
@@ -64,12 +137,10 @@ export default function ProductCreatePage() {
               name="category"
               required
               placeholder="Select a category"
-              options={[
-                { label: "AI", value: "ai" },
-                { label: "Design", value: "design" },
-                { label: "Marketing", value: "marketing" },
-                { label: "Development", value: "development" },
-              ]}
+              options={loaderData.categories.map((category) => ({
+                label: category.name,
+                value: category.category_id.toString(),
+              }))}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -82,25 +153,33 @@ export default function ProductCreatePage() {
             <Input type="file" id="image" name="image" onChange={onChange} />
             <div className="flex flex-col gap-0.5 text-muted-foreground text-xs mb-5">
               <span>제품 사이즈 : 100px x 100px</span>
-              <span>제품 파일 크기 : 1MB 이하</span>
+              <span>{`제품 파일 크기 : ${uploadImageSize / 1024 / 1024}MB 이하`}</span>
               <span>제품 파일 형식 : PNG, JPG, JPEG</span>
             </div>
-            {image ? (
-              <div className="size-64 rounded-xl shadow-xl border-2 flex items-center justify-center">
+            <div className="size-64 rounded-xl shadow-xl border-2 flex items-center justify-center">
+              {image ? (
                 <img
                   src={URL.createObjectURL(image)}
                   alt="제품 이미지"
                   className="size-full object-cover"
                 />
-              </div>
-            ) : null}
+              ) : (
+                "이미지를 등록해주세요"
+              )}
+            </div>
           </div>
         </div>
         <Button
           variant="default"
           type="submit"
           className="min-h-12 text-lg font-bold"
+          disabled={isSubmitting}
         >
+          {isSubmitting ? (
+            <LoaderCircleIcon className="animate-spin" />
+          ) : (
+            "제품 제출"
+          )}
           제품 제출
         </Button>
       </Form>

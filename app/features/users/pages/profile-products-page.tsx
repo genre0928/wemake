@@ -1,18 +1,30 @@
 import { ProductCard } from "~/features/products/components/product-card";
+import type { Route } from "./+types/profile-products-page";
+import { useOutletContext } from "react-router";
+import { getUserProducts } from "../queries";
+import { makeSSRClient } from "~/supa-client";
 
-export default function ProfileProductsPage() {
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const products = await getUserProducts(client, params.nickname);
+  return { products };
+};
+
+export default function ProfileProductsPage({
+  loaderData,
+}: Route.ComponentProps) {
   return (
     <div className="space-y-5">
-      {Array.from({ length: 10 }).map((_, index) => (
+      {loaderData.products.map((product) => (
         <ProductCard
-          key={index}
-          productId={`productId-${index}`}
-          name="name"
-          description="description"
-          commentCount={10}
-          viewCount={10}
-          likeCount={10}
-          isLiked={false}
+          key={product.product_id}
+          productId={product.product_id.toString()}
+          name={product.name}
+          description={product.description}
+          reviews={product.reviews.toString()}
+          views={product.views.toString()}
+          upvotes={product.upvotes.toString()}
+          createdAt={product.created_at.toString()}
         />
       ))}
     </div>

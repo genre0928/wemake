@@ -1,17 +1,28 @@
-import {
-  EyeIcon,
-  GlobeIcon,
-  HeartIcon,
-  MessageCircleIcon,
-  StarIcon,
-} from "lucide-react";
-import { Link } from "react-router";
-import { Button } from "~/common/components/ui/button";
+import { useOutletContext } from "react-router";
+import type { Route } from "./+types/product-overview-page";
+import { makeSSRClient } from "~/supa-client";
 
-export default function ProductOverviewPage() {
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  await client.rpc("track_event", {
+    event_type: "product_view",
+    event_data: {
+      product_id: Number(params.productId),
+    },
+  });
+  return null;
+};
+
+export default function ProductOverviewPage({
+  loaderData,
+}: Route.ComponentProps) {
+  const { product_id, description } = useOutletContext<{
+    product_id: number;
+    description: string;
+  }>();
   return (
     <div>
-      <div>제품 미리보기 페이지 입니다.</div>
+      <div>{description}</div>
     </div>
   );
 }

@@ -6,28 +6,55 @@ import {
   SORT_OPTIONS,
 } from "../constants";
 import { Button } from "~/common/components/ui/button";
-import { Form, Link, useSearchParams } from "react-router";
+import { Await, Form, Link, useSearchParams } from "react-router";
 import {
   DropdownMenu,
-  DropdownMenuItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
   DropdownMenuCheckboxItem,
 } from "~/common/components/ui/dropdown-menu";
 import { ChevronDownIcon } from "lucide-react";
-import { Dropdown } from "react-day-picker";
 import { Input } from "~/common/components/ui/input";
+import { getPosts, getTopics } from "../queries";
+import { posts, topics } from "../schema";
+import type { Route } from "./+types/community-page";
+import { Suspense } from "react";
+import z from "zod";
+import { DateTime } from "luxon";
+import { makeSSRClient } from "~/supa-client";
 
-export default function CommunityPage() {
+const searchParamsSchema = z.object({
+  sort: z.enum(["newest", "popular"]).optional().default("newest"),
+  period: z
+    .enum(["daily", "weekly", "monthly", "yearly", "all"])
+    .optional()
+    .default("all"),
+  keyword: z.string().optional(),
+  category: z.string().optional(),
+});
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const url = new URL(request.url);
+  const { success, data } = searchParamsSchema.safeParse(
+    Object.fromEntries(url.searchParams),
+  );
+  if (!success) {
+    throw new Error("Invalid parameters");
+  }
+  const { sort, period, keyword, category } = data;
+  const { client } = makeSSRClient(request);
+  const [topics, posts] = await Promise.all([
+    getTopics(client),
+    getPosts(client, { limit: 7, sort, period, keyword, category }),
+  ]);
+  return { topics, posts };
+};
+
+export default function CommunityPage({ loaderData }: Route.ComponentProps) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const sort = searchParams.get("sort") || "newest";
-  const period = searchParams.get("period") || "daily";
+  const sortedValue = searchParams.get("sort") || "newest";
+  const periodValue = searchParams.get("period") || "daily";
   const category = searchParams.get("category") || "";
-
-  const onSortChange = (value: string) => {
-    searchParams.set("sort", value);
-    setSearchParams(searchParams);
-  };
   return (
     <div className="space-y-10">
       <Hero title="커뮤니티" description="커뮤니티 페이지" />
@@ -41,7 +68,8 @@ export default function CommunityPage() {
                 <span className="text-sm capitalize">
                   {
                     SORT_OPTIONS.find(
-                      (option: { value: string }) => option.value === sort,
+                      (option: { value: string }) =>
+                        option.value === sortedValue,
                     )?.label
                   }
                 </span>
@@ -51,7 +79,7 @@ export default function CommunityPage() {
                 {SORT_OPTIONS.map(
                   (option: { label: string; value: string }) => (
                     <DropdownMenuCheckboxItem
-                      className="capitalize cursor-pointer"
+                      className="cursor-pointer"
                       key={option.value}
                       onCheckedChange={(checked: boolean) => {
                         if (checked) {
@@ -66,13 +94,14 @@ export default function CommunityPage() {
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
-            {sort === "popular" && (
+            {sortedValue === "popular" && (
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-1">
                   <span className="text-sm capitalize">
                     {
                       PERIOD_OPTIONS.find(
-                        (option: { value: string }) => option.value === period,
+                        (option: { value: string }) =>
+                          option.value === periodValue,
                       )?.label
                     }
                   </span>
@@ -82,7 +111,7 @@ export default function CommunityPage() {
                   {PERIOD_OPTIONS.map(
                     (option: { label: string; value: string }) => (
                       <DropdownMenuCheckboxItem
-                        className="capitalize cursor-pointer"
+                        className="cursor-pointer"
                         key={option.value}
                         onCheckedChange={(checked: boolean) => {
                           if (checked) {
@@ -107,7 +136,7 @@ export default function CommunityPage() {
                 <Form className="w-2/3">
                   <Input
                     type="text"
-                    name="search"
+                    name="keyword"
                     placeholder="검색을 통해 게시물을 찾아보세요"
                   />
                 </Form>
@@ -120,39 +149,41 @@ export default function CommunityPage() {
               </div>
             </div>
             {/* 포스트카드 섹션 */}
-            <div className="w-full space-y-10">
-              {Array.from({ length: 10 }).map((_, index) => (
+            <Suspense fallback={<div>Loading...</div>}>
+              {loaderData.posts.map((post) => (
                 <PostCard
-                  key={index}
-                  postId={`postId-${index}`}
-                  title="게시물 제목"
-                  author="작성자"
-                  category="카테고리"
-                  timeAgo="12시간 전"
+                  key={post.post_id}
+                  postId={post.post_id!}
+                  title={post.title!}
+                  author={post.nickname!}
+                  category={post.topic!}
+                  timeAgo={DateTime.fromISO(post.created_at!)}
                   expanded={true}
+                  upvotes={post.upvotes!}
+                  isUpvoted={post.is_upvoted}
                 />
               ))}
-            </div>
+            </Suspense>
           </div>
         </div>
         {/* 커뮤니티 사이드바 섹션 */}
         <aside className="col-span-2 flex flex-col w-full items-center justify-center gap-4">
           <span className="text-2xl font-bold">카테고리</span>
-          <div className="flex flex-col gap-2">
-            {COMMUNITY_POST_CATEGORIES.map(
-              (category: { label: string; value: string }) => (
+          <Suspense fallback={<div>Loading...</div>}>
+            {loaderData.topics.map((topic) => (
+              <div className="flex flex-col gap-2" key={topic.slug}>
                 <Button
                   className="text-sm text-foreground"
                   variant="link"
                   asChild
                 >
-                  <Link to={`/community?category=${category.value}`}>
-                    {category.label}
+                  <Link to={`/community?category=${topic.name}`}>
+                    {topic.name}
                   </Link>
                 </Button>
-              ),
-            )}
-          </div>
+              </div>
+            ))}
+          </Suspense>
         </aside>
       </div>
     </div>

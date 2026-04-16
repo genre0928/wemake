@@ -173,6 +173,19 @@ Magic UI - 애니메이션 라이브러리
 Supabase - BaaS(Backend as a Service)
 Drizzle ORM - SQL을 사용자 언어로 작성하게 도와주는 라이브러리(타입안정성 향상)
 
+Data 로딩 전략
+
+1. 비동기
+2. <await>
+3. prefetch
+4. clientLoader + HydrateFallback() 로딩 렌더링 요소 // loader()이랑 같이사용 가능해서 browse에서 필요한 데이터 따로 가져올 수 있음
+
+prefetch props - 속성의 조건에 따라 이동하고자 하는 웹페이지의 렌더링을 미리 진행함
+none - prefetch 미진행
+intent - mouse hover 시
+viewport - 사용자의 view에 요소가 진입할 때
+render - 요소가 렌더링 될 때
+
 오류 해결이 필요한 목록 리스트
 
 1. 제품 상세 페이지에서 미리 보기, 리뷰 보기 버튼의 navlink를 활용한 조건부 스타일 적용 시 버튼에 직접 적용되는 것이 아님 // 이를 해결할 수 있는 방법 찾아보기
@@ -180,3 +193,52 @@ Drizzle ORM - SQL을 사용자 언어로 작성하게 도와주는 라이브러�
 2. 메인페이지 오늘의 토론 섹션 포스트카드 플리커 현상 해결하기
 
 3. 답글 css 구조 고민해보기(전체 width를 2/3로 제한하니까 댓글이 길어질수록 크기가 줄어듦)
+
+sql view 생성 순서
+
+1. 폴더에 sql 파일 생성 및 sql문 작성
+2. supabase sql 에디터 실행
+3. 생성한 view의 타입을 가져오기 위해 npm run db:typegen 실행
+
+\*\* view 생성 시 nullable 타입 선정으로 오류 발생
+supa-client.ts에서 null 미허용으로 타입 덮어씌우기 하면 해결
+
+Row Level Security
+
+1. postgreSQL 기능 - DB 보호가 가능함
+2. Backend가 있는 경우 Authorization과 Authentication이 가능하지만 없는 경우 RLS를 통해 대체 가능하다(DB 접근 권한 등)
+   Backend가 없는 경우(React Native app, Flutter App, SPA 등 << 이유 알아보기>>)
+
+사용자 <> supabase 통신하는 경우와 action, loader 함수를 통해 통신하는 경우의 차이점 알아보기
+
+settings에서 업로드한 이미지 나오게끔 수정
+
+useFetcher()훅 공부하기 << 복수의 Form 사용 시 loading 상태를 분리하여 관리하기 위해서 사용함
+(settings-page 코드 참고)
+
+...rest 개념 알아두기, 나머지 속성을 모아서 하나의 객체로 만드는 REst Properties 문법
+
+featcher
+
+- url에 의존하지 않고 백엔드에 데이터 저장하기 위함
+- url보단 컴포넌트에 의존적
+- Form 컴포넌트 복수 사용하는 상황 및, 동일한 function을 페이지마다 구현하는 상황에 유용할 것 같음
+
+fetcher을 통해 데이터 fetch하는 방법
+
+1. const fetcher = useFetcher() react hook 사용
+2. <fetcher.Form> 내에 input 생성 후 value값 전달
+
+RLS 사용 시 policy 생성하는데 using 조건과 with check 조건이 있음 // 각 조건의 차이 공부하기
+drizzle을 통해서 schema.ts에 pgTable 생성 시 두 번째 파라미터에 pgPolicy를 통해서도 설정 가능함
+(supabase에서 하거나 drizzle을 통해서 RLS 설정하거나 두 가지 선택이 가능)
+
+transactional email - 쿠폰을 보내거나 하는 등의 역할을 하는 이메일
+loader이나 action에 데이터를 안보낼 것이므로 Form 컴포넌트가 아닌 form 태그를 사용한다함
+-- Form 컴포넌트에 ㅈ데이터 전달기능이 있나?
+
+https://docs.tosspayments.com/guides/v2/payment-widget/integration / 토스페이먼츠 결제 docs
+코드 챌린지
+
+1. post-page view 변경 등을 통해 upvotes와 isUpvoted 가져와서 event 적용해보기
+

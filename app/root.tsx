@@ -13,6 +13,8 @@ import "./app.css";
 import Navigation from "./common/components/navigation";
 import type React from "react";
 import { cn } from "./lib/utils";
+import { makeSSRClient } from "./supa-client";
+import { countNotifications, getUserById } from "./features/users/queries";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -45,25 +47,53 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App() {
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const {
+    data: { user },
+  } = await client.auth.getUser();
+
+  if (!user?.id) {
+    return { user: null, profile: null };
+  }
+
+  const dbProfile = await getUserById(client, { id: user.id });
+  const notificationsCount = await countNotifications(client, user.id);
+  const profile = dbProfile
+    ? {
+        avatar: dbProfile.avatar ?? "",
+        name: dbProfile.name,
+        nickname: dbProfile.nickname,
+        email: dbProfile.email,
+      }
+    : null;
+
+  return { user, profile, notificationsCount };
+};
+
+export default function App({ loaderData }: Route.ComponentProps) {
   const location = useLocation();
+  const { user, profile, notificationsCount } = loaderData;
+  const isLoggedIn = !!user;
   const isAuth = location.pathname.startsWith("/auth");
   return (
     <div
       className={cn(
         "flex min-h-screen flex-col px-20 py-28",
-        isAuth && "px-0 py-0"
+        isAuth && "px-0 py-0",
       )}
     >
       {!isAuth && (
         <Navigation
-          isLoggedIn={true}
-          hasNotifications={true}
+          isLoggedIn={isLoggedIn}
+          hasNotifications={(notificationsCount ?? 0) > 0}
           hasMessages={true}
+          profile={profile}
+          notificationsCount={notificationsCount ?? 0}
         />
       )}
       <div className="min-h-0 flex-1">
-        <Outlet />
+        <Outlet context={{ isLoggedIn, userProfile: profile, notificationsCount, userId: user?.id }} />
       </div>
     </div>
   );

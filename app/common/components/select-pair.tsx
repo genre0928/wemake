@@ -15,6 +15,7 @@ interface SelectPairProps {
   required?: boolean;
   placeholder: string;
   options: { label: string; value: string }[];
+  defaultValue?: string;
 }
 export default function SelectPair({
   label,
@@ -23,6 +24,7 @@ export default function SelectPair({
   required,
   placeholder,
   options,
+  defaultValue,
 }: SelectPairProps) {
   const [open, setOpen] = useState(false);
   return (
@@ -39,6 +41,7 @@ export default function SelectPair({
         onOpenChange={setOpen}
         name={name}
         required={required}
+        defaultValue={defaultValue}
       >
         <SelectTrigger>
           <SelectValue placeholder={placeholder} />

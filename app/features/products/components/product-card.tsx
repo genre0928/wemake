@@ -7,27 +7,30 @@ import {
   CardTitle,
 } from "~/common/components/ui/card";
 import { Button } from "~/common/components/ui/button";
-import { EyeIcon, HeartIcon, MessageCircleIcon } from "lucide-react";
+import { DotIcon, EyeIcon, HeartIcon, MessageCircleIcon } from "lucide-react";
 import { cn } from "~/lib/utils";
+import { DateTime } from "luxon";
 
 export interface ProductCardProps {
-  productId: string;
+  productId: string | number;
   name: string;
   description: string;
-  commentCount?: number;
-  viewCount?: number;
-  likeCount?: number;
-  isLiked: boolean;
+  reviews: string;
+  views: string;
+  upvotes: string;
+  createdAt: string;
+  isUpvoted?: boolean;
 }
 
 export function ProductCard({
   productId,
   name,
   description,
-  commentCount = 10,
-  viewCount = 10,
-  likeCount = 10,
-  isLiked,
+  reviews,
+  views,
+  upvotes,
+  createdAt,
+  isUpvoted = false,
 }: ProductCardProps) {
   return (
     <Card className="bg-transparent hover:bg-primary/10">
@@ -45,13 +48,17 @@ export function ProductCard({
               <div className="flex items-center gap-1">
                 <MessageCircleIcon className="size-4" />
                 <span className="text-sm font-medium text-muted-foreground">
-                  {commentCount}
+                  {reviews}
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <EyeIcon className="size-4" />
                 <span className="text-sm font-medium text-muted-foreground">
-                  {viewCount}
+                  {views}
+                </span>
+                <DotIcon className="size-4" />
+                <span className="text-sm font-medium text-muted-foreground">
+                  {DateTime.fromISO(createdAt ?? "").toRelative()}
                 </span>
               </div>
             </div>
@@ -63,10 +70,8 @@ export function ProductCard({
             variant="outline"
             className="flex flex-col size-16 cursor-pointer"
           >
-            <HeartIcon
-              className={cn("size-4", isLiked && "fill-primary text-primary")}
-            />
-            <span>{likeCount}</span>
+            <HeartIcon className={cn("size-4", isUpvoted && "fill-red-500")} />
+            <span>{upvotes}</span>
           </Button>
         </CardFooter>
       </div>

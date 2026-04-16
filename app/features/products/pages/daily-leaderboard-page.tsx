@@ -6,14 +6,19 @@ import { ProductCard } from "../components/product-card";
 import { Button } from "~/common/components/ui/button";
 import { Link } from "react-router";
 import ProductPagination from "~/common/components/product-pagination";
+import { getProductPagesByDateRange, getProductsByDateRange } from "../queries";
+import { makeSSRClient } from "~/supa-client";
 
-export const meta: Route.MetaFunction = ({params}) => {
+export const meta: Route.MetaFunction = ({ params }) => {
   const { year, month, day } = params;
   return [
-    {title : `${year}년 ${month}월 ${day}일 리더보드 | Wemake`},
-    {name : "description", content : `${year}년 ${month}월 ${day}일 리더보드 페이지`},
-  ]
-}
+    { title: `${year}년 ${month}월 ${day}일 리더보드 | Wemake` },
+    {
+      name: "description",
+      content: `${year}년 ${month}월 ${day}일 리더보드 페이지`,
+    },
+  ];
+};
 
 const paramsSchema = z.object({
   year: z.coerce.number(),
@@ -21,7 +26,8 @@ const paramsSchema = z.object({
   day: z.coerce.number(),
 });
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params, request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
   const { success, data } = paramsSchema.safeParse(params);
   if (!success) {
     throw new Error("Invalid parameters");
@@ -36,17 +42,30 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
       status: 400,
     });
   }
-  // JSON 직렬화를 위해 plain object로 반환 (DateTime은 클라이언트에서 문자열로 변환됨)
-  return { ...data };
+
+  const url = new URL(request.url);
+
+  const products = await getProductsByDateRange(client, {
+    startDate: date.startOf("day"),
+    endDate: date.endOf("day"),
+    limit: 15,
+    page: Number(url.searchParams.get("page") ?? "1"),
+  });
+
+  const totalPages = await getProductPagesByDateRange(client, {
+    startDate: date.startOf("day"),
+    endDate: date.endOf("day"),
+  });
+
+  return { data, products, totalPages };
 };
 
 export default function DailyLeaderboardPage({
   loaderData,
 }: Route.ComponentProps) {
-  const { year, month, day } = loaderData;
-  const urlDate = DateTime.fromObject({ year, month, day }).setZone(
-    "Asia/Seoul",
-  );
+  const { data, products, totalPages } = loaderData;
+  const { year, month, day } = data;
+  const urlDate = DateTime.fromObject(data).setZone("Asia/Seoul");
   const isToday = urlDate.equals(
     DateTime.now().setZone("Asia/Seoul").startOf("day"),
   );
@@ -87,21 +106,21 @@ export default function DailyLeaderboardPage({
         )}
       </div>
       <div className="space-y-4 w-full max-w-3xl mx-auto mb-10">
-        {Array.from({ length: 7 }).map((_, index) => (
+        {products.map((product) => (
           <ProductCard
-            key={index}
-            productId="productId"
-            name="제품명"
-            description="제품 설명"
-            commentCount={10}
-            viewCount={10}
-            likeCount={10}
-            isLiked={false}
+            key={product.product_id}
+            productId={product.product_id}
+            name={product.name}
+            description={product.description}
+            reviews={product.reviews}
+            views={product.views}
+            upvotes={product.upvotes}
+            createdAt={product.created_at}
           />
         ))}
       </div>
       <div>
-        <ProductPagination totalPages={10} />
+        <ProductPagination totalPages={totalPages} />
       </div>
     </div>
   );

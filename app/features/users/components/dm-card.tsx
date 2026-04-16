@@ -15,8 +15,8 @@ export interface DmCardProps {
 export function DmCard({
   isFromMe,
   message,
-  avatarSrc = "https://github.com/genre0928.png",
-  avatarFallback = "N",
+  avatarSrc,
+  avatarFallback,
 }: DmCardProps) {
   return (
     <div
@@ -30,7 +30,7 @@ export function DmCard({
         className={cn(
           "rounded-md p-4 text-sm max-w-1/4",
           isFromMe
-            ? "bg-primary text-primary-foreground rounded-br-none"
+            ? "bg-primary text-primary-foreground rounded-br-none dark:"
             : "bg-accent rounded-bl-none",
         )}
       >

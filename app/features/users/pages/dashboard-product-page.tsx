@@ -11,15 +11,33 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "~/common/components/ui/chart";
+import { makeSSRClient } from "~/supa-client";
+import type { Route } from "./+types/dashboard-product-page";
+import { getLoggedInUserId } from "../queries";
+import { redirect } from "react-router";
 
-const chartData = [
-  { month: "January", views: 186, visitior: 780 },
-  { month: "February", views: 305, visitior: 350 },
-  { month: "March", views: 237, visitior: 572 },
-  { month: "April", views: 73, visitior: 66 },
-  { month: "May", views: 209, visitior: 81 },
-  { month: "June", views: 214, visitior: 158 },
-];
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const userId = await getLoggedInUserId(client);
+  const { error } = await client
+    .from("products")
+    .select("product_id")
+    .eq("profile_id", userId)
+    .eq("product_id", Number(params.productId))
+    .single();
+  if (error) {
+    throw redirect("/my/dashboard");
+  }
+
+  const { data, error: productError } = await client.rpc("get_product_stats", {
+    product_id: params.productId,
+  });
+  if (productError) {
+    throw new Error(productError.message);
+  }
+  return { chartData: data };
+};
+
 const chartConfig = {
   views: {
     label: "👁️",
@@ -31,7 +49,9 @@ const chartConfig = {
   },
 } as ChartConfig;
 
-export default function DashboardProductPage() {
+export default function DashboardProductPage({
+  loaderData,
+}: Route.ComponentProps) {
   return (
     <div className="space-y-5">
       <h1 className="text-2xl font-bold">상품 판매 분석</h1>
@@ -42,7 +62,7 @@ export default function DashboardProductPage() {
             <ChartContainer config={chartConfig}>
               <AreaChart
                 accessibilityLayer
-                data={chartData}
+                data={loaderData.chartData}
                 margin={{
                   left: 12,
                   right: 12,
@@ -53,20 +73,20 @@ export default function DashboardProductPage() {
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
-                  tickFormatter={(value) => value.slice(0, 3)}
+                  padding={{ left: 15, right: 15 }}
                 />
                 <ChartTooltip
                   cursor={false}
                   content={<ChartTooltipContent hideLabel indicator="line" />}
                 />
                 <Area
-                  dataKey="visitior"
+                  dataKey="product_views"
                   type="natural"
                   strokeWidth={2}
                   dot={false}
                 />
                 <Area
-                  dataKey="views"
+                  dataKey="product_reviews"
                   type="natural"
                   strokeWidth={2}
                   dot={false}

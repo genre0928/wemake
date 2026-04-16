@@ -5,20 +5,21 @@ import {
   AvatarImage,
 } from "~/common/components/ui/avatar";
 import { Button } from "~/common/components/ui/button";
+import { DateTime } from "luxon";
 
 export interface ReviewCardProps {
-  avatarSrc?: string;
+  avatarSrc: string;
   displayName: string;
   username: string;
   rating?: number;
   content: string;
-  dateText: string;
+  dateText: DateTime;
   /** 본인 리뷰일 때만 수정/삭제 버튼 표시 */
   showActions?: boolean;
 }
 
 export function ReviewCard({
-  avatarSrc = "https://github.com/shadcn.png",
+  avatarSrc,
   displayName,
   username,
   rating = 5,
@@ -76,7 +77,7 @@ export function ReviewCard({
       {/* 리뷰 내용 */}
       <p className="text-sm">{content}</p>
       {/* 작성일 */}
-      <p className="text-sm text-muted-foreground">{dateText}</p>
+      <p className="text-sm text-muted-foreground">{dateText.toRelative()}</p>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useFetcher } from "react-router";
 import { Button } from "~/common/components/ui/button";
 import {
   Card,
@@ -13,16 +13,19 @@ import {
 } from "~/common/components/ui/avatar";
 import { DotIcon, HeartIcon } from "lucide-react";
 import { cn } from "~/lib/utils";
+import { DateTime } from "luxon";
 
 export interface PostCardProps {
-  postId: string;
+  postId: number;
   title: string;
   author: string;
   category: string;
-  timeAgo: string;
+  timeAgo: DateTime;
   avatarSrc?: string;
   avatarFallback?: string;
   expanded?: boolean;
+  upvotes: number;
+  isUpvoted: boolean;
 }
 
 export function PostCard({
@@ -34,7 +37,18 @@ export function PostCard({
   avatarSrc = "https://github.com/shadcn.png",
   avatarFallback = "N",
   expanded = false,
+  upvotes,
+  isUpvoted,
 }: PostCardProps) {
+  const fetcher = useFetcher();
+  const optimisticVotesCount = fetcher.state === "idle" ? upvotes : isUpvoted ? upvotes - 1 : upvotes + 1;
+  const optimisticIsUpvoted = fetcher.state === "idle" ? isUpvoted : !isUpvoted;
+  const upvoteHandler = async () => {
+    await fetcher.submit(null, {
+      method: "post",
+      action: `/community/${postId}/upvote`,
+    });
+  };
   return (
     <Card
       className={cn(
@@ -61,7 +75,7 @@ export function PostCard({
               <span>{author}</span>
               <span>{category}</span>
               <DotIcon className="size-4" />
-              <span>{timeAgo}</span>
+              <span>{timeAgo.toRelative()}</span>
             </div>
           </div>
         </CardHeader>
@@ -75,9 +89,21 @@ export function PostCard({
       )}
       {expanded && (
         <CardFooter>
-          <Button variant="outline" className="flex flex-col size-16">
-            <HeartIcon className="size-4 shrink-0" />
-            <span>10</span>
+          <Button
+            variant="outline"
+            className={cn(
+              "flex flex-col size-16 cursor-pointer ",
+              optimisticIsUpvoted && "border-primary dark:border-primary",
+            )}
+            onClick={upvoteHandler}
+          >
+            <HeartIcon
+              className={cn(
+                "size-4 shrink-0",
+                optimisticIsUpvoted && "fill-primary text-primary",
+              )}
+            />
+            <span>{optimisticVotesCount}</span>
           </Button>
         </CardFooter>
       )}

@@ -1,6 +1,6 @@
-import { ReplyIcon } from "lucide-react";
-import { useState } from "react";
-import { Form, Link } from "react-router";
+import { LoaderCircleIcon, ReplyIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useFetcher, useOutletContext } from "react-router";
 import InputPair from "~/common/components/input-pair";
 import {
   Avatar,
@@ -9,33 +9,59 @@ import {
 } from "~/common/components/ui/avatar";
 import { Button } from "~/common/components/ui/button";
 import { cn } from "~/lib/utils";
-
+import { DateTime } from "luxon";
 export interface ReplyCardProps {
   nickname: string;
   content: string;
-  timeAgo: string;
-  avatarSrc?: string;
+  timeAgo: DateTime;
+  avatarSrc?: string | null;
   avatarFallback?: string;
   topLevel: boolean;
+  topLevelId?: number;
+  replies?: {
+    reply_id: number;
+    content: string;
+    created_at: string;
+    profiles: {
+      nickname: string;
+      avatar: string | null;
+    };
+  }[];
 }
 
 export function ReplyCard({
   nickname,
   content,
   timeAgo,
-  avatarSrc = "https://github.com/shadcn.png",
+  avatarSrc,
   avatarFallback = "CN",
   topLevel,
+  topLevelId,
+  replies,
 }: ReplyCardProps) {
+  const fetcher = useFetcher<{ success?: boolean }>();
+  const isSubmitting = fetcher.state !== "idle";
   const [replying, setReplying] = useState(false);
   const toggleReplying = () => {
     setReplying((prev) => !prev);
   };
+  const { isLoggedIn, userProfile } = useOutletContext<{
+    isLoggedIn: boolean;
+    userProfile: {
+      avatar?: string;
+      nickname?: string;
+    } | null;
+  }>();
+  useEffect(() => {
+    if (fetcher.data?.success) {
+      setReplying(false);
+    }
+  }, [fetcher.data?.success]);
   return (
     <div className={cn("flex flex-col gap-5")}>
       <div className="flex gap-5">
         <Avatar className="size-10">
-          <AvatarImage src={avatarSrc} />
+          {avatarSrc ? <AvatarImage src={avatarSrc} /> : null}
           <AvatarFallback>{avatarFallback}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col gap-5 text-sm text-muted-foreground w-2/3">
@@ -44,19 +70,24 @@ export function ReplyCard({
               <Link to={`/users/${nickname}`}>
                 <span>{nickname}</span>
               </Link>
-              <span>{timeAgo}</span>
+              <span>{timeAgo.toRelative()}</span>
             </div>
             <p>{content}</p>
           </div>
           {!replying ? (
-            <div>
-              <Button variant="ghost" onClick={toggleReplying}>
-                <ReplyIcon className="size-4" />
-                답글 작성
-              </Button>
-            </div>
-          ) : (
-            <Form className="flex flex-col gap-5">
+            isLoggedIn && topLevel ? (
+              <div>
+                <Button variant="ghost" onClick={toggleReplying}>
+                  <ReplyIcon className="size-4" />
+                  답글 작성
+                </Button>
+              </div>
+            ) : null
+          ) : isLoggedIn ? (
+            <fetcher.Form className="flex flex-col gap-5" method="post">
+              {typeof topLevelId === "number" ? (
+                <input type="hidden" name="topLevelId" value={topLevelId} />
+              ) : null}
               <div className="flex gap-5">
                 <Avatar className="size-10">
                   <AvatarImage src="https://github.com/shadcn.png" />
@@ -67,23 +98,28 @@ export function ReplyCard({
                   id="comment"
                   placeholder="댓글을 입력해주세요"
                   textArea
+                  defaultValue={`@${nickname} `}
                 />
               </div>
               <div className="flex justify-end">
-                <Button variant="default" type="submit">
-                  댓글 작성
+                <Button variant="default" type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? <LoaderCircleIcon className="animate-spin" /> : "댓글 작성"}
                 </Button>
               </div>
-            </Form>
-          )}
-          {topLevel && (
-            <ReplyCard
-              nickname="닉네임"
-              content="나는 이 글의 내용에 대해 전적으로 동의해, 왜냐하면 나도 비슷한 경험이 있기 때문이야"
-              timeAgo="1분 전"
-              topLevel={false}
-            />
-          )}
+            </fetcher.Form>
+          ) : null}
+          {topLevel &&
+            replies &&
+            replies.map((reply) => (
+              <ReplyCard
+                key={reply.created_at}
+                nickname={reply.profiles.nickname}
+                content={reply.content}
+                timeAgo={DateTime.fromISO(reply.created_at)}
+                topLevel={false}
+                topLevelId={reply.reply_id}
+              />
+            ))}
         </div>
       </div>
     </div>

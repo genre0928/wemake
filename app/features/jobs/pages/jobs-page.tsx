@@ -2,10 +2,34 @@ import { Hero } from "~/common/components/hero";
 import { JobCard } from "~/features/jobs/components/job-card";
 import { JOB_SALARY_TYPES, JOB_TYPES, WORK_TYPES } from "../constants";
 import { Button } from "~/common/components/ui/button";
-import { Link, useSearchParams } from "react-router";
-import { cn } from "~/lib/utils";
+import { useSearchParams } from "react-router";
+import { getJobs } from "../queries";
+import type { Route } from "./+types/jobs-page";
+import z from "zod";
+import { makeSSRClient } from "~/supa-client";
 
-export default function JobsPage() {
+const searchParamsSchema = z.object({
+  type: z.enum(JOB_TYPES.map((type) => type.value)).optional(),
+  work: z.enum(WORK_TYPES.map((work) => work.value)).optional(),
+  salary: z.enum(JOB_SALARY_TYPES.map((salary) => salary.value)).optional(),
+});
+
+export const loader = async ({request} : Route.LoaderArgs) => {
+  const url = new URL(request.url);
+  const {data, success } = searchParamsSchema.safeParse(Object.fromEntries(url.searchParams));
+  if (!success) {
+    throw new Error("Invalid parameters");
+  }
+  const { client } = makeSSRClient(request);
+  const jobs = await getJobs(client, {
+    type: data?.type,
+    work: data?.work,
+    salary: data?.salary,
+  });
+  return { jobs };
+};
+
+export default function JobsPage({ loaderData }: Route.ComponentProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   // 필터 선택 후 스크롤이 움직이지 않게끔 구현
   const onFilterClick = (key: string, value: string) => {
@@ -24,16 +48,19 @@ export default function JobsPage() {
       <div className="grid grid-cols-6 gap-20 items-start">
         {/* 직업 카드 섹션 */}
         <div className="grid grid-cols-4 col-span-4 gap-5">
-          {Array.from({ length: 10 }).map((_, index) => (
+          {loaderData.jobs.map((job) => (
             <JobCard
-              key={index}
-              jobId={`jobId-${index}`}
-              companyName="회사명"
-              timeAgo="12시간 전"
-              title="직업 제목"
-              tags={["태그1", "태그2", "태그3"]}
-              salary={[3500, 4000]}
-              location="경상북도 구미시"
+              key={job.job_id}
+              jobId={job.job_id}
+              companyName={job.company_name}
+              timeAgo={job.created_at}
+              title={job.position}
+              tags={job.skills.split(",")}
+              salary={[
+                Number(job.salary.split("-")[0]),
+                Number(job.salary.split("-")[1]),
+              ]}
+              location={job.company_location}
             />
           ))}
         </div>

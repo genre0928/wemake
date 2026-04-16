@@ -1,20 +1,34 @@
 import { IdeaCard } from "~/features/ideas/components/idea-card";
+import type { Route } from "./+types/dashboard-ideas-page";
+import { makeSSRClient } from "~/supa-client";
+import { getLoggedInUserId } from "../queries";
+import { getMyClaimedIdeas } from "~/features/ideas/queries";
 
-export default function DashboardIdeasPage() {
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const userId = await getLoggedInUserId(client);
+  const ideas = await getMyClaimedIdeas(client, { userId, limit: 10 });
+  return { ideas };
+};
+
+export default function DashboardIdeasPage({
+  loaderData,
+}: Route.ComponentProps) {
   return (
     <div className="space-y-5">
       <h1 className="text-2xl font-bold">아이디어</h1>
       <div className="grid grid-cols-4 gap-6">
-        {Array.from({ length: 10 }).map((_, index) => (
+        {loaderData.ideas.map((idea) => (
           <IdeaCard
-            key={index}
-            ideaId={`ideaId-${index}`}
-            title="아이디어 제목"
-            viewCount={10}
-            timeAgo="12시간 전"
-            likeCount={10}
+            key={idea.idea_id}
+            ideaId={idea.idea_id}
+            title={idea.title}
+            viewCount={idea.views}
+            timeAgo={idea.created_at}
+            likeCount={0}
             isLiked={false}
-            isClaimed={false}
+            isClaimed={!!idea.claimed_at}
+            owner={true}
           />
         ))}
       </div>

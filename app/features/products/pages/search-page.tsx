@@ -5,6 +5,8 @@ import { Form, useLoaderData } from "react-router";
 import { Input } from "~/common/components/ui/input";
 import { Button } from "~/common/components/ui/button";
 import { ProductCard } from "../components/product-card";
+import { getProductBySearch } from "../queries";
+import { makeSSRClient } from "~/supa-client";
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -18,7 +20,8 @@ const searchParamsSchema = z.object({
   page: z.coerce.number().optional().default(1),
 });
 
-export function loader({ request }: Route.LoaderArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
+  const { client } = makeSSRClient(request);
   const url = new URL(request.url);
   const { success, data } = searchParamsSchema.safeParse(
     Object.fromEntries(url.searchParams),
@@ -27,29 +30,37 @@ export function loader({ request }: Route.LoaderArgs) {
     throw new Error("Invalid parameters");
   }
   const { query, page } = data;
-  return { query, page };
+  const products = await getProductBySearch(client, { query, page });
+  return { query, page, products };
 }
 
-export default function SearchPage() {
+export default function SearchPage({ loaderData }: Route.ComponentProps) {
   const { query, page } = useLoaderData<Route.ComponentProps["loaderData"]>();
   return (
     <div className="space-y-20">
-      <Hero title="검색" description={query ? `"${query}"에 대한 검색 결과입니다` : "검색하고자 하는 키워드를 입력하세요"} />
+      <Hero
+        title="검색"
+        description={
+          query
+            ? `"${query}"에 대한 검색 결과입니다`
+            : "검색하고자 하는 키워드를 입력하세요"
+        }
+      />
       <Form className="flex justify-center items-center gap-2 max-w-2xl mx-auto">
         <Input type="text" name="query" placeholder="검색어를 입력하세요" />
         <Button type="submit">검색</Button>
       </Form>
       <div className="space-y-4 w-full max-w-3xl mx-auto mb-10">
-        {Array.from({ length: 7 }).map((_, index) => (
+        {loaderData.products.map((product) => (
           <ProductCard
-            key={index}
-            productId="productId"
-            name="제품명"
-            description="제품 설명"
-            commentCount={10}
-            viewCount={10}
-            likeCount={10}
-            isLiked={false}
+            key={product.product_id}
+            productId={product.product_id}
+            name={product.name}
+            description={product.description}
+            reviews={product.reviews}
+            views={product.views}
+            upvotes={product.upvotes}
+            createdAt={product.created_at}
           />
         ))}
       </div>

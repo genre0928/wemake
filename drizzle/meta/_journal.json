@@ -57,6 +57,62 @@
       "when": 1772433329756,
       "tag": "0007_mushy_white_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1772525852917,
+      "tag": "0008_yielding_maverick",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1772610341229,
+      "tag": "0009_fixed_karen_page",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1773027378622,
+      "tag": "0010_marvelous_dexter_bennett",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1773027472983,
+      "tag": "0011_youthful_johnny_blaze",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1773061224434,
+      "tag": "0012_fine_professor_monster",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1773468588787,
+      "tag": "0013_silent_venus",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1776185082805,
+      "tag": "0014_lucky_sunspot",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1776264466356,
+      "tag": "0015_hard_bruce_banner",
+      "breakpoints": true
     }
   ]
 }

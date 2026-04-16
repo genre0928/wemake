@@ -1,6 +1,14 @@
 import { Hero } from "~/common/components/hero";
 import type { Route } from "./+types/categories-page";
 import { CategoryCard } from "../components/category-card";
+import { getCategories } from "../queries";
+import { makeSSRClient } from "~/supa-client";
+
+export const loader = async ({ request }: Route.LoaderArgs) => {
+  const { client } = makeSSRClient(request);
+  const categories = await getCategories(client);
+  return { categories };
+};
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -9,7 +17,7 @@ export const meta: Route.MetaFunction = () => {
   ];
 };
 
-export default function CategoriesPage() {
+export default function CategoriesPage({ loaderData }: Route.ComponentProps) {
   return (
     <div>
       <Hero
@@ -17,12 +25,12 @@ export default function CategoriesPage() {
         description="카테고리별로 제품을 확인해보세요"
       />
       <div className="grid grid-cols-4 gap-10">
-        {Array.from({ length: 10 }).map((_, index) => (
+        {loaderData.categories.map((category) => (
           <CategoryCard
-            key={`categoryId-${index}`}
-            id={`categoryId-${index}`}
-            name="카테고리 이름"
-            description="카테고리 설명"
+            key={category.category_id}
+            id={category.category_id}
+            name={category.name}
+            description={category.description}
           />
         ))}
       </div>

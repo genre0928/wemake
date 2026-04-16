@@ -1,5 +1,4 @@
 import { Link } from "react-router";
-import { Separator } from "./ui/separator";
 import {
   NavigationMenu,
   NavigationMenuLink,
@@ -14,7 +13,7 @@ import {
   BarChart3Icon,
   BellIcon,
   LogOutIcon,
-  MessageCircleIcon,
+  MessageCircleMore,
   MoonIcon,
   SettingsIcon,
   SunIcon,
@@ -150,12 +149,21 @@ interface NavigationProps {
   isLoggedIn: boolean;
   hasNotifications: boolean;
   hasMessages: boolean;
+  profile: {
+    avatar: string;
+    name: string;
+    nickname: string;
+    email: string;
+  } | null;
+  notificationsCount: number;
 }
 
 export default function Navigation({
   isLoggedIn,
   hasNotifications,
   hasMessages,
+  profile,
+  notificationsCount,
 }: NavigationProps) {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const handleDarkMode = () => {
@@ -181,11 +189,13 @@ export default function Navigation({
         <NavigationMenu>
           <NavigationMenuList>
             {menus.map((menu) => (
-              <NavigationMenuItem>
+              <NavigationMenuItem key={menu.name}>
                 {menu.items ? (
-                  <NavigationMenuTrigger className="bg-transparent">
-                    {menu.name}
-                  </NavigationMenuTrigger>
+                  <Link to={menu.to} prefetch="intent">
+                    <NavigationMenuTrigger className="bg-transparent">
+                      {menu.name}
+                    </NavigationMenuTrigger>
+                  </Link>
                 ) : (
                   <NavigationMenuLink asChild>
                     <Link
@@ -246,14 +256,86 @@ export default function Navigation({
             <MoonIcon />
           </Label>
         </div>
-        <div className="flex gap-4">
-          <Button asChild variant="secondary">
-            <Link to="/auth/login">로그인</Link>
-          </Button>
-          <Button asChild>
-            <Link to="/auth/join">회원가입</Link>
-          </Button>
-        </div>
+        {isLoggedIn ? (
+          <div className="flex items-center gap-5">
+            <Button size="icon" variant="ghost" className="relative">
+              <Link to="/my/notifications">
+                <BellIcon className="size-4" />
+              </Link>
+              {hasNotifications && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full size-4 flex items-center justify-center">
+                  {notificationsCount}
+                </span>
+              )}
+            </Button>
+            <Button size="icon" variant="ghost" className="relative">
+              <Link to="/my/messages">
+                <MessageCircleMore className="size-4" />
+              </Link>
+              {hasMessages && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full size-4 flex items-center justify-center">
+                  1
+                </span>
+              )}
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar>
+                  {profile?.avatar ? (
+                    <AvatarImage src={profile?.avatar} />
+                  ) : (
+                    <AvatarFallback>{profile?.name.charAt(0)}</AvatarFallback>
+                  )}
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuLabel className="flex flex-col gap-1">
+                  <span>{profile?.name}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {profile?.email}
+                  </span>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-white" />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem asChild className="cursor-pointer">
+                    <Link to="/my/dashboard">
+                      <BarChart3Icon className="size-4" />
+                      대시보드
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="cursor-pointer">
+                    <Link to="/my/profile">
+                      <UserIcon className="size-4" />
+                      프로필
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="cursor-pointer">
+                    <Link to="/my/settings">
+                      <SettingsIcon className="size-4" />
+                      설정
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator className="bg-white" />
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link to="/auth/logout">
+                    <LogOutIcon className="size-4" />
+                    로그아웃
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        ) : (
+          <div className="flex items-center gap-4">
+            <Button asChild variant="secondary">
+              <Link to="/auth/login">로그인</Link>
+            </Button>
+            <Button asChild>
+              <Link to="/auth/join">회원가입</Link>
+            </Button>
+          </div>
+        )}
       </div>
     </nav>
   );

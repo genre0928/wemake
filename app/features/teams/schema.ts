@@ -6,9 +6,11 @@ import {
   pgTable,
   text,
   timestamp,
+  uuid,
 } from "drizzle-orm/pg-core";
 import { TEAM_STATUS } from "./constants";
 import { sql } from "drizzle-orm";
+import { profiles } from "../users/schema";
 
 export const teamStage = pgEnum(
   "team_stage",
@@ -26,6 +28,11 @@ export const teams = pgTable(
     size: integer().notNull(),
     position: text().notNull(),
     description: text().notNull(),
+    team_leader_id: uuid()
+      .references(() => profiles.profile_id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
     created_at: timestamp().notNull().defaultNow(),
     updated_at: timestamp().notNull().defaultNow(),
   },
