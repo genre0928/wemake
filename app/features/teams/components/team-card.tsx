@@ -1,0 +1,81 @@
+import { Link } from "react-router";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/common/components/ui/card";
+import { Badge } from "~/common/components/ui/badge";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "~/common/components/ui/avatar";
+import { SquareArrowOutUpRight } from "lucide-react";
+
+export interface TeamCardProps {
+  teamId: number;
+  title: string;
+  description: string;
+  tags: string[];
+  authorNickname: string;
+  authorAvatarUrl: string | null;
+}
+
+export function TeamCard({
+  teamId,
+  title,
+  description,
+  tags,
+  authorNickname,
+  authorAvatarUrl = null,
+}: TeamCardProps) {
+  return (
+    <Card className="bg-transparent hover:bg-primary/10">
+      <CardHeader className="flex items-center justify-between">
+        <CardTitle className="line-clamp-1 text-xl flex items-center justify-between">
+          <span>{title}</span>
+        </CardTitle>
+        <Link
+          to={`/teams/${teamId}`}
+          className="group inline-flex focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <SquareArrowOutUpRight className="size-6" />
+        </Link>
+      </CardHeader>
+      <div className="flex flex-col justify-between flex-1">
+        <CardContent className="space-y-2">
+          <p className="text-lg line-clamp-2">{description}</p>
+          <div className="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <Badge
+                key={tag}
+                variant="default"
+                className="flex items-center gap-2 text-base"
+              >
+                <span>{tag}</span>
+              </Badge>
+            ))}
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-end">
+          <div>
+            <Badge
+              variant="ghost"
+              className="flex items-center gap-2 text-base"
+            >
+              <Avatar className="size-6">
+                <AvatarFallback>N</AvatarFallback>
+                {authorAvatarUrl ? <AvatarImage src={authorAvatarUrl} /> : null}
+              </Avatar>
+              <span className="text-sm text-muted-foreground">
+                @{authorNickname}
+              </span>
+            </Badge>
+          </div>
+        </CardFooter>
+      </div>
+    </Card>
+  );
+}
