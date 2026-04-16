@@ -235,10 +235,16 @@ drizzle을 통해서 schema.ts에 pgTable 생성 시 두 번째 파라미터에 
 
 transactional email - 쿠폰을 보내거나 하는 등의 역할을 하는 이메일
 loader이나 action에 데이터를 안보낼 것이므로 Form 컴포넌트가 아닌 form 태그를 사용한다함
--- Form 컴포넌트에 ㅈ데이터 전달기능이 있나?
+-- Form 컴포넌트에 데이터 전달기능이 있나?
 
 https://docs.tosspayments.com/guides/v2/payment-widget/integration / 토스페이먼츠 결제 docs
 코드 챌린지
 
+vercel을 통해 deploy 후 social 로그인이 필요한 경우 supabase에서 authentication - url configuragion에서 도메인 이름으로 변경해줘야함
+
+cloudflare security 탭 WAF(Web Application Firewall)을 통해 규칙 설정 가능
+ex)국적이 스페인인 경우 block, interactive 처리 등등
+
+sentry.io를 통해 error report 처리할 수 있음 -- 이거는 나중에 해볼거라서 강의 안들음
 1. post-page view 변경 등을 통해 upvotes와 isUpvoted 가져와서 event 적용해보기
 
