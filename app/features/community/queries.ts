@@ -2,7 +2,6 @@
 // DB에서 데이터를 가져올 수 있는 방법 - 1. Drizzle ORM 2. Supabase Client 3. SQL Views
 // Data 조회만 진행하는 경우 : SQL Views 사용
 
-import db from "~/lib/server/db";
 import { postLikes, posts, topics } from "./schema";
 import { count, eq } from "drizzle-orm";
 import { profiles } from "../users/schema";
