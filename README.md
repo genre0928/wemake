@@ -246,5 +246,7 @@ cloudflare security 탭 WAF(Web Application Firewall)을 통해 규칙 설정 �
 ex)국적이 스페인인 경우 block, interactive 처리 등등
 
 sentry.io를 통해 error report 처리할 수 있음 -- 이거는 나중에 해볼거라서 강의 안들음
+
 1. post-page view 변경 등을 통해 upvotes와 isUpvoted 가져와서 event 적용해보기
 
+134
